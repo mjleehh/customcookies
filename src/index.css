@@ -1,0 +1,27 @@
+body {
+    background: slategrey;
+    padding: 0;
+}
+
+.app {
+    display: inline-block;
+    background: lightgrey;
+    padding: 12px;
+    margin: 20px;
+}
+
+.views {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.banner {
+    display: inline-block;
+    font-size: 30px;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+}

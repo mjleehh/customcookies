@@ -1,0 +1,45 @@
+{
+  "name": "cookiecutter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.tsx",
+  "scripts": {
+    "start": "webpack serve --port 3000",
+    "build": "NODE_ENV=production webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Jonathan Lee",
+  "license": "ISC",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.7.1",
+    "@types/file-saver": "^2.0.5",
+    "@types/react-redux": "^7.1.22",
+    "@types/three": "^0.136.1",
+    "antd": "^4.18.3",
+    "file-saver": "^2.0.5",
+    "lodash": "^4.17.21",
+    "mathjs": "^10.0.2",
+    "ml-matrix": "^6.8.2",
+    "mousetrap": "^1.6.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "three": "^0.136.0"
+  },
+  "devDependencies": {
+    "@types/antd": "^1.0.0",
+    "@types/lodash": "^4.14.178",
+    "@types/mathjs": "^9.4.2",
+    "@types/mousetrap": "^1.6.9",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "css-loader": "^6.5.1",
+    "html-webpack-plugin": "^5.5.0",
+    "install": "^0.13.0",
+    "mini-css-extract-plugin": "^2.4.6",
+    "ts-loader": "^9.2.6",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.2"
+  }
+}
