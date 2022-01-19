@@ -1,4 +1,4 @@
-import {Mesh} from './types'
+import {Mesh} from './geometry/types'
 
 export default function serializeObj(mesh: Mesh): string {
     const vertices = mesh.vertices.map(v => `v ${v[0]} ${v[1]} ${v[2]}`).join('\n')

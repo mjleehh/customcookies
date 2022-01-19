@@ -3,13 +3,6 @@ body {
     padding: 0;
 }
 
-.app {
-    display: inline-block;
-    background: lightgrey;
-    padding: 12px;
-    margin: 20px;
-}
-
 .views {
     display: flex;
     flex-direction: row;

@@ -9,7 +9,7 @@ interface RotationState {
 const initialState = {
     horizontal: 0,
     vertical: 0,
-    zoom: 1000,
+    zoom: 1,
 } as RotationState
 
 const ROTATION_STEP = 5

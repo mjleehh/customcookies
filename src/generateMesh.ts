@@ -1,4 +1,4 @@
-import {Face, Mesh, Path, Vector, Vector3} from './types'
+import {Face, Mesh, Path, Vector, Vector3} from './geometry/types'
 import * as m from 'mathjs'
 
 function direction(base: Vector, tip: Vector): Vector {

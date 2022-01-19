@@ -6,7 +6,7 @@ import 'antd/dist/antd.css'
 import {Provider} from 'react-redux'
 import store from './state/store'
 import './keybindings'
-import './index.css'
+import './style/index.css'
 
 
 ReactDOM.render(

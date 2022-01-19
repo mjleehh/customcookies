@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react'
-import {Path} from './types'
+import {Path} from './geometry/types'
 
 function drawTesselated({data, isClosed}: Path,p: CanvasRenderingContext2D) {
     p.beginPath()
@@ -26,6 +26,9 @@ export default function Renderer({paths}: {paths: Path[]}) {
         }
         context.resetTransform()
         context.clearRect(0, 0, 300, 300)
+        context.scale(1, 1)
+        context.translate(150, 150)
+
 
         for (let path of paths) {
             drawTesselated(path, context)
