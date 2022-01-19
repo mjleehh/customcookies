@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react'
-import Renderer from './Renderer'
+import Preview2d from './Preview2d'
 import TesselatingBrush from './TesselatingBrush'
 import {parsePath} from './parse_paths'
 import {Mesh, Path} from './geometry/types'
@@ -8,7 +8,7 @@ import {toInteger} from 'lodash'
 import {Button, InputNumber, Switch} from 'antd'
 import serializeObj from './serializeObj'
 import FileSaver from 'file-saver'
-import Preview from './Preview'
+import Preview3d from './Preview3d'
 import input = Simulate.input
 import PathPainter from './PathPainter'
 import {generateMesh, offset, Side} from './generateMesh'
@@ -80,8 +80,8 @@ export default function App() {
     return <main style={AppStyle}>
         <div className="banner">Cookie Customizer</div>
         <div className="views">
-            <Renderer paths={paths}/>
-            <Preview mesh={state.mesh}/>
+            <Preview2d paths={paths} size={{width: 300, height: 300}}/>
+            <Preview3d mesh={state.mesh} size={{width: 300, height: 300}}/>
         </div>
         <div className="inputStyle">
             <div><label>path</label><input defaultValue={defaultCmds} ref={cmdsInput}/></div>
