@@ -13,7 +13,7 @@ import * as colors from 'src/style/colors'
 import 'src/state/geometry'
 import {toInteger} from 'lodash'
 import {useAppSelector} from '../state/hooks'
-import {OffsetPath, setGeometry} from 'src/state/geometry'
+import {OffsetPath, resetGeometry, setGeometry} from 'src/state/geometry'
 import {dispatch} from '../state/store'
 
 const AppStyle = {
@@ -27,6 +27,8 @@ export default function Main() {
     const pathDescriptions = useAppSelector<string[] | null>(state => state.geometry.pathDescriptions)
     const meshes = useAppSelector<Mesh[] | null>(state => state.geometry.meshes)
     const paths = useAppSelector<OffsetPath[] | null>(state => state.geometry.paths)
+
+    const onReset = () => {dispatch(resetGeometry())}
 
     const onUpdate = () => {
         if (!pathDescriptions) {
@@ -90,8 +92,9 @@ export default function Main() {
             <div><label>tesselation n</label><InputNumber  defaultValue={10} min={1} ref={tesellationInput}/></div>
             <div><label>thickness d</label><InputNumber defaultValue={2} min={1} max={20} ref={thicknessInput}/></div>
             <div><label>show offset</label><Switch onChange={updateShowOffsets}/></div>
-            <div><Button onClick={onUpdate}>update</Button></div>
-            <div><Button onClick={onSave} disabled={!meshes}>save</Button></div>
+            <Button onClick={onUpdate}>update</Button>
+            <Button onClick={onSave} disabled={!meshes}>save</Button>
+            <Button onClick={onReset}>reset</Button>
         </div>
     </main>
 }

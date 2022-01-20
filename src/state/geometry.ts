@@ -33,8 +33,13 @@ const geometrySlice = createSlice({
             state.meshes = meshes
             state.paths = paths
         },
+        'resetGeometry': state => {
+            state.pathDescriptions = null
+            state.paths = null
+            state.meshes = null
+        }
     }
 })
 
-export const {setPathsDescriptions, setGeometry} = geometrySlice.actions
+export const {setPathsDescriptions, setGeometry, resetGeometry} = geometrySlice.actions
 export default geometrySlice.reducer
