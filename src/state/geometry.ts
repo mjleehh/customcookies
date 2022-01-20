@@ -1,10 +1,16 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {Mesh, Path} from 'src/geometry/types'
+import {Mesh, Path, Vector} from 'src/geometry/types'
+
+export interface OffsetPath {
+    profile: Path
+    left: Vector[]
+    right: Vector[]
+}
 
 interface GeometryState {
     pathDescriptions: string[] | null
     meshes: Mesh[] | null
-    paths: Path[] | null
+    paths: OffsetPath[] | null
 }
 
 const initialState = {
@@ -15,7 +21,7 @@ const initialState = {
 
 type GeometryActionPayload = {
     meshes: Mesh[]
-    paths: Path[]
+    paths: OffsetPath[]
 }
 
 const geometrySlice = createSlice({

@@ -2,6 +2,8 @@ import 'src/geometry/splines'
 import {cubicSpline, quadricSpline} from 'src/geometry/splines'
 import {Vector} from 'src/geometry/types'
 import PathBrush from './PathBrush'
+import * as g from '../geometry/operations'
+import _ from 'lodash'
 
 export default class TesselatingBrush implements PathBrush {
     constructor(tesselation: number) {
@@ -13,6 +15,8 @@ export default class TesselatingBrush implements PathBrush {
     }
 
     begin(x: number, y: number): void {
+        this._path = []
+        this.isClosed = false
         this.addVertex(x, y)
     }
 
@@ -52,9 +56,19 @@ export default class TesselatingBrush implements PathBrush {
     finalize(): void {}
 
     get path() {
+        const path = this._path
+        const length = path.length
+        if (length < 2) {
+            throw `invalid path of length ${length}`
+        }
+
+        // make sure first and last point of path are distinguishable
+        //
+        const deltaLoop = g.norm(g.sub(path[0], path[length - 1])) <= 0
+
         return {
             isClosed: this.isClosed,
-            data: [...this._path],
+            data: deltaLoop ? path.slice(0, length -1) : path.slice()
         }
     }
 

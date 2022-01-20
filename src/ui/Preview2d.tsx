@@ -1,13 +1,16 @@
 import React, {useEffect, useRef} from 'react'
-import {Path, Size, Vec} from '../geometry/types'
+import {Box, Path, Size, Vec, Vector} from '../geometry/types'
 import * as colors from '../style/colors'
 import * as g from '../geometry/operations'
+import {OffsetPath} from '../state/geometry'
+import {mergeBoxes} from '../geometry/operations'
+import _ from 'lodash'
 
-function drawTesselated({data, isClosed}: Path,p: CanvasRenderingContext2D) {
+function drawTesselated(p: CanvasRenderingContext2D, vertices: Vector[], isClosed = false) {
     p.beginPath()
-    const [x0, y0] = data[0]
+    const [x0, y0] = vertices[0]
     p.moveTo(x0, y0)
-    for (let vertex of data.slice(1)) {
+    for (let vertex of vertices.slice(1)) {
         const [x, y] = vertex
         p.lineTo(x, y)
     }
@@ -18,11 +21,12 @@ function drawTesselated({data, isClosed}: Path,p: CanvasRenderingContext2D) {
 }
 
 type Preview2dProps = {
-    paths: Path[]
+    paths: OffsetPath[] | null
     size: Size
+    showOffsets: boolean
 }
 
-export default function Preview2d({paths, size}: Preview2dProps) {
+export default function Preview2d({paths, size, showOffsets}: Preview2dProps) {
     const canvas = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
@@ -35,8 +39,12 @@ export default function Preview2d({paths, size}: Preview2dProps) {
         context.resetTransform()
         context.clearRect(0, 0, size.width, size.height)
 
-        if (paths.length > 0) {
-            const boundingBox = g.calculateBoundingBox(paths[0])
+        if (paths && paths.length > 0) {
+            const boundingBox = _.transform(paths, (box, path) =>
+                mergeBoxes(box, g.calculateBoundingBox(path.profile.data),
+                    g.calculateBoundingBox(path.right),
+                    g.calculateBoundingBox(path.left))
+            , g.calculateBoundingBox(paths[0].profile.data))
             const pathCenter = g.center(boundingBox)
             const canvasCenter = Vec(size.width / 2, size.height / 2)
             const pathSize = g.size(boundingBox)
@@ -49,13 +57,19 @@ export default function Preview2d({paths, size}: Preview2dProps) {
 
             context.setTransform(scale, 0, 0, scale, g.X(translation), g.Y(translation))
 
-            context.strokeStyle = colors.path
             context.lineWidth = 1 / scale
-        }
 
-        for (let path of paths) {
+            for (let path of paths) {
+                const {data, isClosed} = path.profile
+                context.strokeStyle = colors.path
+                drawTesselated(context, data, isClosed)
 
-            drawTesselated(path, context)
+                if (showOffsets) {
+                    context.strokeStyle = colors.pathOffset
+                    drawTesselated(context, path.right, isClosed)
+                    drawTesselated(context, path.left, isClosed)
+                }
+            }
         }
     })
 

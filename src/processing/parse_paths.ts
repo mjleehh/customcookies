@@ -63,14 +63,6 @@ function preEvaluate(str: string): SvgPath  {
     }
 }
 
-function numify(arr: string[], num: number): [number[], string[]] {
-    if (arr.length < num) {
-        console.error('to few elements for numify')
-    }
-    const numStrs = arr.slice(0, num).map(parseFloat)
-    return [numStrs, arr.slice(num)]
-}
-
 export function parsePath(str: string, p: PathPainter) {
     const path = preEvaluate(str.trim())
     feedMoveTo(p, path.move)
@@ -89,7 +81,6 @@ export function feedMoveTo(p: PathPainter, {params, isRelative}: Command): void 
 
     const [xStart, yStart, ...linePoints] = params
     p.begin(xStart, yStart)
-
 
     let remainingLinePoints = linePoints
     while (remainingLinePoints.length > 0) {
@@ -113,11 +104,11 @@ function feedLineTo(p: PathPainter, {params, isRelative}: Command): void {
 }
 
 function feedHorizontalLine(p: PathPainter, cmd: Command): void {
-
+    throw 'not implemented'
 }
 
 function feedVerticalLine(p: PathPainter, cmd: Command): void {
-
+    throw 'not implemented'
 }
 
 function feedCubicCurve(p: PathPainter, {params, isRelative}: Command): void {
@@ -157,11 +148,11 @@ function feedCommand(p: PathPainter, cmd: Command): void {
         }
         case 'S':
         case 's': {
-            return
+            throw 'not implemented'
         }
         case 'Q':
         case 'q': {
-            return
+            throw 'not implemented'
         }
         case 'Z':
         case 'z': {

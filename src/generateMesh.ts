@@ -1,9 +1,11 @@
 import {Face, Mesh, Path, Vector, Vector3} from './geometry/types'
 import * as m from 'mathjs'
+import * as g from 'src/geometry/operations'
+import {OffsetPath} from './state/geometry'
 
 function direction(base: Vector, tip: Vector): Vector {
-    const v = m.subtract(tip, base) as Vector
-    const length = m.norm(v)
+    const v = g.sub(tip, base)
+    const length = g.norm(v)
     if (length <= 0) {
         throw 'degenerate line of length 0'
     }
@@ -35,7 +37,7 @@ export enum Side {
     left,
 }
 
-export function offset({data, isClosed}: Path, d: number, side: Side): Path {
+export function offset({data, isClosed}: Path, d: number, side: Side): Vector[] {
     if (data.length < 2) {
         throw 'invalid path! at least 2 points required'
     }
@@ -66,13 +68,12 @@ export function offset({data, isClosed}: Path, d: number, side: Side): Path {
         }
         res.push(pi)
     }
-
-    return {data: res, isClosed}
+    return res
 }
 
-export function generateMesh(profile: Path, rightOffset: Path, leftOffset: Path, height: number): Mesh {
+export function generateMesh({profile, left, right}: OffsetPath, height: number): Mesh {
     const length = profile.data.length
-    if (rightOffset.data.length != length || leftOffset.data.length != length) {
+    if (right.length != length || left.length != length) {
         throw 'curve lengths missmatch'
     }
 
@@ -83,8 +84,8 @@ export function generateMesh(profile: Path, rightOffset: Path, leftOffset: Path,
 
     const vertices = [
         ...profile.data.map(liftVertex(0)),
-        ...rightOffset.data.map(liftVertex(height)),
-        ...leftOffset.data.map(liftVertex(height)),
+        ...right.map(liftVertex(height)),
+        ...left.map(liftVertex(height)),
     ]
     const faces = [] as Face[]
 

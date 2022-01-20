@@ -13,7 +13,7 @@ import * as colors from 'src/style/colors'
 import 'src/state/geometry'
 import {toInteger} from 'lodash'
 import {useAppSelector} from '../state/hooks'
-import {setGeometry} from 'src/state/geometry'
+import {OffsetPath, setGeometry} from 'src/state/geometry'
 import {dispatch} from '../state/store'
 
 const AppStyle = {
@@ -26,7 +26,7 @@ const AppStyle = {
 export default function Main() {
     const pathDescriptions = useAppSelector<string[] | null>(state => state.geometry.pathDescriptions)
     const meshes = useAppSelector<Mesh[] | null>(state => state.geometry.meshes)
-    const paths = useAppSelector<Path[] | null>(state => state.geometry.paths)
+    const paths = useAppSelector<OffsetPath[] | null>(state => state.geometry.paths)
 
     const onUpdate = () => {
         if (!pathDescriptions) {
@@ -48,12 +48,17 @@ export default function Main() {
             const painter = new PathPainter(tesselatingBrush)
 
             let meshes = [] as Mesh[]
-            let paths = [] as Path[]
-            for (let pathDescription in pathDescriptions) {
-                parsePath(pathDescriptions[0], painter)
+            let paths = [] as OffsetPath[]
+            for (let pathDescription of pathDescriptions) {
+                parsePath(pathDescription, painter)
                 const {path} = tesselatingBrush
-                paths.push(path, offset(path, thickness, Side.right), offset(path, thickness, Side.left))
-                meshes.push(generateMesh(paths[0], paths[1], paths[2], 10))
+                const offsetPath = {
+                    profile: path,
+                    right: offset(path, thickness, Side.right),
+                    left: offset(path, thickness, Side.left)
+                }
+                paths.push(offsetPath)
+                meshes.push(generateMesh(offsetPath, 10))
             }
             dispatch(setGeometry({meshes, paths}))
         } catch (e) {
@@ -72,21 +77,19 @@ export default function Main() {
     const thicknessInput = useRef<HTMLInputElement>(null)
     const tesellationInput = useRef<HTMLInputElement>(null)
 
-    const [showOffset, updateShowOffset] = useState(false)
-
-    const visiblePaths = paths || []
+    const [showOffsets, updateShowOffsets] = useState(false)
 
     return <main>
         <div className="banner">Cookie Customizer</div>
         <div className="views">
-            <Preview2d paths={visiblePaths} size={{width: 300, height: 300}}/>
+            <Preview2d paths={paths} size={{width: 300, height: 300}} showOffsets={showOffsets}/>
             <Preview3d meshes={meshes} size={{width: 300, height: 300}}/>
         </div>
         <div className="inputStyle">
             {/*<div><label>path</label><input defaultValue={defaultCmds} ref={cmdsInput}/></div>*/}
             <div><label>tesselation n</label><InputNumber  defaultValue={10} min={1} ref={tesellationInput}/></div>
             <div><label>thickness d</label><InputNumber defaultValue={2} min={1} max={20} ref={thicknessInput}/></div>
-            <div><label>show offset</label><Switch onChange={updateShowOffset}/></div>
+            <div><label>show offset</label><Switch onChange={updateShowOffsets}/></div>
             <div><Button onClick={onUpdate}>update</Button></div>
             <div><Button onClick={onSave} disabled={!meshes}>save</Button></div>
         </div>
