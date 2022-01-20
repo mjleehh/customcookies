@@ -6,10 +6,10 @@ export default function serialize_obj(meshes: Mesh[]): string {
     let faces = ''
 
     for (let mesh of meshes) {
-        vertices += mesh.vertices.map(v => `v ${v[0]} ${v[1]} ${v[2]}`).join('\n')
+        vertices += mesh.vertices.map(v => `v ${v[0]} ${v[1]} ${v[2]}`).join('\n') + '\n'
         const facesWithShiftedIndices = mesh.faces.map(indices => indices.map(index => index + offset))
-        faces += facesWithShiftedIndices.map(f => 'f ' + f.join(' ')).join('\n')
-        offset += vertices.length
+        faces += facesWithShiftedIndices.map(f => 'f ' + f.join(' ')).join('\n') + '\n'
+        offset += mesh.vertices.length
     }
     return vertices + '\n\n' + faces + '\n\n'
 }
