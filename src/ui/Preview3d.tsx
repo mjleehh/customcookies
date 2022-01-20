@@ -8,6 +8,28 @@ import * as colors from '../style/colors'
 
 const CAMERA_FOV = 50
 
+function meshesToThreeGeometry(meshes: Mesh[]): t.BufferGeometry {
+    const geometry = new t.BufferGeometry()
+
+    let offset = 0
+    let allFaces = [] as number[]
+    let allVertices = [] as number[]
+
+    for (let mesh of meshes) {
+        const {vertices} = mesh
+        allFaces = allFaces.concat(_.flatten(mesh.faces).map(idx => idx + offset))
+        allVertices = allVertices.concat(_.flatten(vertices))
+        offset += vertices.length
+    }
+    geometry.setIndex(allFaces)
+    geometry.setAttribute( 'position', new t.Float32BufferAttribute(allVertices, 3 ) )
+    geometry.center()
+    geometry.computeVertexNormals()
+    geometry.computeBoundingSphere()
+    return geometry
+}
+
+
 type Preview3dProps = {
     meshes: Mesh[] | null
     size: Size
@@ -29,16 +51,13 @@ export default function Preview3d({meshes, size}: Preview3dProps) {
 
     // FIXME: can only display one path in 3D
     if (meshes) {
-        const mesh = meshes[0]
-        const geometry = new t.BufferGeometry()
-        geometry.setIndex(_.flatten(mesh.faces))
-        geometry.setAttribute( 'position', new t.Float32BufferAttribute(_.flatten(mesh.vertices), 3 ) )
-        geometry.center()
-        geometry.computeBoundingSphere()
+        const geometry = meshesToThreeGeometry(meshes)
+
         const {radius} = geometry.boundingSphere as  t.Sphere
         const camDistance = radius / Math.tan(t.MathUtils.degToRad(CAMERA_FOV) / 2) * zoom
         camera.position.set(0, 0, camDistance)
         const solidMaterial = new t.MeshBasicMaterial({color: colors.surface, wireframe: false, side: t.FrontSide})
+        //const solidMaterial = new t.MeshNormalMaterial({wireframe: false, side: t.FrontSide})
         solid = new t.Mesh(geometry, solidMaterial)
         const wireframeMaterial = new t.MeshBasicMaterial({color: colors.wireframe, wireframe: true})
         const wireframe = new t.Mesh(geometry, wireframeMaterial)

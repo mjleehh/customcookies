@@ -103,6 +103,9 @@ export function generateMesh({profile, left, right}: OffsetPath, height: number)
     }
     if (profile.isClosed) {
         generateSegment(length - 1)
+    } else {
+        faces.push([profileIdx(0), leftIdx(0), rightIdx(0)])
+        faces.push([profileIdx(length -1 ), rightIdx(length - 1), leftIdx( length - 1)])
     }
 
     return {vertices, faces}
