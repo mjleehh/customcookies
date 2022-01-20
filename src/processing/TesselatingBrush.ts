@@ -1,6 +1,6 @@
-import './splines'
-import {cubicSpline, quadricSpline} from './splines'
-import {Vector} from './geometry/types'
+import 'src/geometry/splines'
+import {cubicSpline, quadricSpline} from 'src/geometry/splines'
+import {Vector} from 'src/geometry/types'
 import PathBrush from './PathBrush'
 
 export default class TesselatingBrush implements PathBrush {

@@ -1,4 +1,4 @@
-import {Vector} from './geometry/types'
+import {Vector} from '../geometry/types'
 
 export default class CanvasPathBrush {
     constructor(p: CanvasRenderingContext2D) {

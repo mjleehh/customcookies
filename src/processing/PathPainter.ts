@@ -1,5 +1,5 @@
 import PathBrush from './PathBrush'
-import {Vector} from './geometry/types'
+import {Vector} from '../geometry/types'
 
 export default class PathPainter {
     constructor(b: PathBrush) {
@@ -8,7 +8,6 @@ export default class PathPainter {
 
     begin(x: number, y: number): void {
         this.pos = [x, y]
-        console.log('begin', [x, y])
         this.b.begin(x, y)
     }
 
@@ -18,7 +17,6 @@ export default class PathPainter {
 
     lineTo(x: number, y: number, relative: boolean): void {
         const [xAbs, yAbs] = this.updateAbsolute(x, y, relative)
-        console.log('line to', [xAbs, yAbs], relative)
         this.b.lineTo(xAbs, yAbs)
         this.cv = null
     }
@@ -36,7 +34,6 @@ export default class PathPainter {
     quadricCurveTo(cx: number, cy: number, x: number, y: number, relative: boolean): void {
         const cvAbs = this.calculateAbsolute(cx, cy, relative)
         const pAbs = this.updateAbsolute(x, y, relative)
-        console.log('quadric', [cvAbs[0], cvAbs[1]], [pAbs[0], pAbs[1]])
         this.b.quadricCurveTo(cvAbs[0], cvAbs[1], pAbs[0], pAbs[1])
         this.pos = pAbs
         this.cv = cvAbs
@@ -46,7 +43,6 @@ export default class PathPainter {
         const c1Abs = this.calculateAbsolute(c1x, c1y, relative)
         const c2Abs = this.calculateAbsolute(c2x, c2y, relative)
         const pAbs = this.updateAbsolute(x, y, relative)
-        console.log('cubic', [c1Abs[0], c1Abs[1]], [c2Abs[0], c2Abs[1]], [pAbs[0], pAbs[1]])
         this.b.cubicCurveTo(c1Abs[0], c1Abs[1], c2Abs[0], c2Abs[1], pAbs[0], pAbs[1])
         this.pos = pAbs
         this.cv = c2Abs

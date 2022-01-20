@@ -8,11 +8,15 @@
       "dom",
       "esnext"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "src": ["src"]
+    },
     "strict": true,
     "sourceMap": true,
     "target": "esnext"
   },
   "exclude": [
     "node_modules"
-  ]
+    ]
 }

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react'
-import {Path, Size, Vec} from './geometry/types'
-import * as colors from './style/colors'
-import * as g from './geometry/operations'
+import {Path, Size, Vec} from '../geometry/types'
+import * as colors from '../style/colors'
+import * as g from '../geometry/operations'
 
 function drawTesselated({data, isClosed}: Path,p: CanvasRenderingContext2D) {
     p.beginPath()

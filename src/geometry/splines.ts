@@ -1,5 +1,5 @@
 import * as m from 'mathjs'
-import {Vector} from './geometry/types'
+import {Vector} from './types'
 
 const quadricFunc = m.compile('((1 - t)^2 p1 + 2 (1 - t) t cv + t^2 p2)')
 

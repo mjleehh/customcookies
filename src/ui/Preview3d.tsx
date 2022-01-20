@@ -1,19 +1,19 @@
 import React, {useState} from 'react'
 import * as t from 'three'
 import {useEffect, useRef} from 'react'
-import {Mesh, Size} from './geometry/types'
+import {Mesh, Size} from '../geometry/types'
 import _ from 'lodash'
-import {useAppSelector} from './state/hooks'
-import * as colors from './style/colors'
+import {useAppSelector} from '../state/hooks'
+import * as colors from '../style/colors'
 
 const CAMERA_FOV = 50
 
 type Preview3dProps = {
-    mesh: Mesh | null
+    meshes: Mesh[] | null
     size: Size
 }
 
-export default function Preview3d({mesh, size}: Preview3dProps) {
+export default function Preview3d({meshes, size}: Preview3dProps) {
     const horizontal = useAppSelector(state => state.rotation.horizontal)
     const vertical = useAppSelector(state => state.rotation.vertical)
     const zoom = useAppSelector(state => state.rotation.zoom)
@@ -26,7 +26,10 @@ export default function Preview3d({mesh, size}: Preview3dProps) {
     camera.position.z = 0
 
     let solid = null as t.Mesh | null
-    if (mesh) {
+
+    // FIXME: can only display one path in 3D
+    if (meshes) {
+        const mesh = meshes[0]
         const geometry = new t.BufferGeometry()
         geometry.setIndex(_.flatten(mesh.faces))
         geometry.setAttribute( 'position', new t.Float32BufferAttribute(_.flatten(mesh.vertices), 3 ) )
