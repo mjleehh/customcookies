@@ -1,10 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit'
-import rotationReducer from './rotation'
+import view3dReducer from './view3d'
 import pathsReducer from './geometry'
 
 const store = configureStore({
     reducer: {
-        'rotation': rotationReducer,
+        'view3d': view3dReducer,
         'geometry': pathsReducer,
     },
     devTools: true

@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'
+import React from 'react'
 import * as colors from 'src/style/colors'
 import Main from './Main'
 import UploadSvg from './UploadSvg'

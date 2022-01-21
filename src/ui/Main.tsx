@@ -1,30 +1,20 @@
 import React, {useRef, useState} from 'react'
 import Preview2d from './Preview2d'
-import {Mesh, Path} from 'src/geometry/types'
+import {Mesh} from 'src/geometry/types'
 import {Button, InputNumber, Switch} from 'antd'
 import serialize_obj from 'src/processing/serializeToObj'
 import FileSaver from 'file-saver'
 import Preview3d from './Preview3d'
-import PathPainter from 'src/processing/PathPainter'
-import {generateMesh, offset, Side} from 'src/processing/generateMesh'
-import * as colors from 'src/style/colors'
 import 'src/state/geometry'
 import {toInteger} from 'lodash'
 import {useAppSelector} from 'src/state/hooks'
-import {OffsetPath, resetGeometry, updateGeometry} from 'src/state/geometry'
+import {resetGeometry, updateGeometry} from 'src/state/geometry'
 import {dispatch} from 'src/state/store'
-import {SvgPath} from '../processing/svg/types'
 import PathView from './PathView'
 
-const AppStyle = {
-    display: 'inline-block',
-    padding: '12px',
-    margin: '20px',
-    background: colors.background,
-}
+
 
 export default function Main() {
-    const svgPaths = useAppSelector<SvgPath[] | null>(state => state.geometry.svgPaths)
     const meshes = useAppSelector<Mesh[] | null>(state => state.geometry.meshes)
 
     const onReset = () => {dispatch(resetGeometry())}
@@ -58,7 +48,7 @@ export default function Main() {
     const [showTessellated, updateShowTessellated] = useState(true)
 
     const pathView = showTessellated
-        ?  <Preview2d size={{width: 300, height: 300}} showOffsets={showOffsets}/>
+        ? <Preview2d size={{width: 300, height: 300}} showOffsets={showOffsets}/>
         : <PathView size={{width: 300, height: 300}}/>
 
     return <main>

@@ -6,7 +6,7 @@ import _ from 'lodash'
 import {useAppSelector} from 'src/state/hooks'
 import * as colors from 'src/style/colors'
 import {dispatch} from 'src/state/store'
-import {setRotations, zoomIn, zoomOut} from 'src/state/rotation'
+import {setRotations, zoomIn, zoomOut} from 'src/state/view3d'
 import * as g from 'src/geometry/operations'
 
 const CAMERA_FOV = 50
@@ -64,9 +64,9 @@ type StartDragState = {
 } | null
 
 export default function Preview3d({meshes, size}: Preview3dProps) {
-    const horizontal = useAppSelector(state => state.rotation.horizontal)
-    const vertical = useAppSelector(state => state.rotation.vertical)
-    const zoom = useAppSelector(state => state.rotation.zoom)
+    const horizontal = useAppSelector(state => state.view3d.horizontal)
+    const vertical = useAppSelector(state => state.view3d.vertical)
+    const zoom = useAppSelector(state => state.view3d.zoom)
 
     const scene = new t.Scene()
     scene.background = new t.Color(colors.background)

@@ -1,22 +1,22 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
-interface RotationState {
+interface View3dState {
     horizontal: number
     vertical: number
     zoom: number
 }
 
-const initialState = {
+const initialState: View3dState = {
     horizontal: 0,
     vertical: 0,
     zoom: 1,
-} as RotationState
+}
 
 const ROTATION_STEP = 5
 const ZOOM_FACTOR = 1.2
 
-const rotationSlice = createSlice({
-    name: 'rotation',
+const view3dSlice = createSlice({
+    name: 'view3d',
     initialState,
     reducers: {
         'rotateLeft': state => {state.horizontal = state.horizontal = (state.horizontal + ROTATION_STEP) % 360},
@@ -33,5 +33,5 @@ const rotationSlice = createSlice({
     }
 })
 
-export const {rotateLeft, rotateRight, setRotations, rotateUp, rotateDown, zoomIn, zoomOut} = rotationSlice.actions
-export default rotationSlice.reducer
+export const {rotateLeft, rotateRight, setRotations, rotateUp, rotateDown, zoomIn, zoomOut} = view3dSlice.actions
+export default view3dSlice.reducer
