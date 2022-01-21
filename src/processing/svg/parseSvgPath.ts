@@ -1,12 +1,8 @@
 import {
-    CLOSER_SYMS,
     commandRegExp, DELIMITER_SYMS,
-    MOVE_NAME_SYMS,
-    NON_COMMAND_SYMS,
-    NON_MOVE_NAME_SYMS, PATH_PATTERN,
     pathRegExp
 } from './regular_expressions'
-import {Command, SvgPath} from './types'
+import {Command, SvgPathSegment} from './types'
 
 function evaluateCommands(commandsStr: string): Command[] {
     let rest = commandsStr
@@ -30,11 +26,9 @@ function evaluateCommands(commandsStr: string): Command[] {
     return res
 }
 
-export default function parseSvgPath(str: string): SvgPath  {
+export default function parseSvgPath(str: string): SvgPathSegment  {
     const allMatch = pathRegExp.exec(str)
     if (!allMatch) {
-        const a = PATH_PATTERN
-        debugger
         throw `unsupported SVG path: ${str}`
     }
     const [_, moveSection, commandSection, __, closedSection] = allMatch

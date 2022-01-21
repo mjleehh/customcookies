@@ -1,6 +1,6 @@
 import 'src/geometry/splines'
 import {cubicSpline, quadricSpline} from 'src/geometry/splines'
-import {Vector} from 'src/geometry/types'
+import {Path, Vector} from 'src/geometry/types'
 import PathBrush from './PathBrush'
 import * as g from '../geometry/operations'
 import _ from 'lodash'
@@ -15,7 +15,7 @@ export default class TesselatingPathBrush implements PathBrush {
     }
 
     begin(x: number, y: number): void {
-        this._path = []
+        this.currentSegment = []
         this.isClosed = false
         this.addVertex(x, y)
     }
@@ -53,10 +53,8 @@ export default class TesselatingPathBrush implements PathBrush {
         this.isClosed = true
     }
 
-    finalize(): void {}
-
-    get path() {
-        const path = this._path
+    finalize(): void {
+        const path = this.currentSegment
         const length = path.length
         if (length < 2) {
             throw `invalid path of length ${length}`
@@ -66,14 +64,18 @@ export default class TesselatingPathBrush implements PathBrush {
         //
         const deltaLoop = g.norm(g.sub(path[0], path[length - 1])) <= 0
 
-        return {
+        this._segments.push({
             isClosed: this.isClosed,
             data: deltaLoop ? path.slice(0, length -1) : path.slice()
-        }
+        })
+    }
+
+    get segments(): Path[] {
+        return [...this._segments]
     }
 
     private get pos(): Vector {
-        const value =  this._path.at(-1)
+        const value =  this.currentSegment.at(-1)
         if (!value) {
             throw 'unexpected empty array'
         }
@@ -81,11 +83,12 @@ export default class TesselatingPathBrush implements PathBrush {
     }
 
     private addVertex(x: number, y: number) {
-        this._path.push([x, y])
+        this.currentSegment.push([x, y])
     }
 
     private tesselation: number
     private prevCV: Vector | null = null
     private isClosed: boolean = false
-    private _path: Vector[] = []
+    private currentSegment: Vector[] = []
+    private _segments: Path[] = []
 }

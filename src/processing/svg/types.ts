@@ -4,8 +4,10 @@ export type Command = {
     isRelative: boolean
 }
 
-export type SvgPath = {
+export type SvgPathSegment = {
     move: Command,
     commands: Command[],
     isClosed: boolean,
 }
+
+export type SvgPath = SvgPathSegment[]

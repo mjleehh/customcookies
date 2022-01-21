@@ -1,24 +1,40 @@
 import PathPainter from '../PathPainter'
 import parseSvgPath from './parseSvgPath'
-import {Command, SvgPath} from './types'
+import {Command, SvgPath, SvgPathSegment} from './types'
 
-export default function paintSvgPath(path: SvgPath, p: PathPainter) {
-    feedMoveTo(p, path.move)
-    for (let cmd of path.commands) {
-        feedCommand(p, cmd)
+export default function paintSvgPath(p: PathPainter, path: SvgPath) {
+    if (path.length < 1) {
+        throw 'invalid emtpy path'
     }
-    if (path.isClosed) {
-        p.close()
+    const [first, ...tail] = path
+    paintSvgPathSegment(p, first, true)
+    for (let segment of tail) {
+        paintSvgPathSegment(p, segment, false)
     }
 }
 
-function feedMoveTo(p: PathPainter, {params, isRelative}: Command): void {
+function paintSvgPathSegment(p: PathPainter, pathSegment: SvgPathSegment, isFirst: boolean) {
+    feedMoveTo(p, pathSegment.move, isFirst)
+    for (let cmd of pathSegment.commands) {
+        feedCommand(p, cmd)
+    }
+    if (pathSegment.isClosed) {
+        p.close()
+    }
+    p.finalize()
+}
+
+function feedMoveTo(p: PathPainter, {params, isRelative}: Command, isFirst: boolean): void {
     if (params.length % 2 != 0) {
         throw `move command supplied invalid number of arguments: ${params.length}`
     }
 
     const [xStart, yStart, ...linePoints] = params
-    p.begin(xStart, yStart)
+    if (isFirst) {
+        p.begin(xStart, yStart)
+    } else {
+        p.moveTo(xStart, yStart, isRelative)
+    }
 
     let remainingLinePoints = linePoints
     while (remainingLinePoints.length > 0) {

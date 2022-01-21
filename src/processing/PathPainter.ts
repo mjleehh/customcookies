@@ -12,8 +12,17 @@ export default class PathPainter {
         this.b.begin(x, y)
     }
 
+    moveTo(x: number, y: number, relative: boolean): void {
+        const [xAbs, yAbs] = this.updateAbsolute(x, y, relative)
+        this.begin(xAbs, yAbs)
+    }
+
     close() {
         this.b.close()
+    }
+
+    finalize() {
+        this.b.finalize()
     }
 
     lineTo(x: number, y: number, relative: boolean): void {

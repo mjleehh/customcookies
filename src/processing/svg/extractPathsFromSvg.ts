@@ -3,7 +3,7 @@ import parseSvgPath from './parseSvgPath'
 import {SvgPath} from './types'
 
 
-function processPaths(description: string) {
+function processPaths(description: string): SvgPath {
     if (!pathsRegExp.test(description)) {
         throw `bad SVG path ${description}`
     }
@@ -14,7 +14,7 @@ function processPaths(description: string) {
         pathStrs.push(rest.slice(item.index).trim())
         rest = rest.slice(0, item.index)
     }
-    return pathStrs.map(parseSvgPath)
+    return pathStrs.map(parseSvgPath).reverse()
 }
 
 
@@ -26,7 +26,7 @@ export default function extractPathsFromSvg(svgString: string): SvgPath[] {
     for (let i = 0; i < tags.length; ++i) {
         const description = tags[i].getAttribute('d')
         if (description) {
-            paths = paths.concat(processPaths(description.trim()))
+            paths.push(processPaths(description))
         }
     }
     return paths

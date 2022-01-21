@@ -24,12 +24,12 @@ export default class CanvasPathBrush implements PathBrush {
 
     close(): void {
         this.p.closePath()
-        this.p.stroke()
     }
 
     finalize() {
-
+        this.p.stroke()
     }
 
     private p: CanvasRenderingContext2D
 }
+

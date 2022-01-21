@@ -53,15 +53,17 @@ export default function Main() {
             let meshes = [] as Mesh[]
             let paths = [] as OffsetPath[]
             for (let pathDescription of svgPaths) {
-                paintSvgPath(pathDescription, painter)
-                const {path} = tesselatingBrush
-                const offsetPath = {
-                    profile: path,
-                    right: offset(path, thickness, Side.right),
-                    left: offset(path, thickness, Side.left)
+                paintSvgPath(painter, pathDescription)
+                const {segments} = tesselatingBrush
+                for (let segment of segments) {
+                    const offsetPath = {
+                        profile: segment,
+                        right: offset(segment, thickness, Side.right),
+                        left: offset(segment, thickness, Side.left)
+                    }
+                    paths.push(offsetPath)
+                    meshes.push(generateMesh(offsetPath, 10))
                 }
-                paths.push(offsetPath)
-                meshes.push(generateMesh(offsetPath, 10))
             }
             dispatch(setGeometry({meshes, paths}))
         } catch (e) {
