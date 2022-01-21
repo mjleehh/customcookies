@@ -26,7 +26,7 @@ type Preview2dProps = {
     showOffsets: boolean
 }
 
-export default function Preview2d({paths, size, showOffsets}: Preview2dProps) {
+export default function PathView({paths, size, showOffsets}: Preview2dProps) {
     const canvas = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {

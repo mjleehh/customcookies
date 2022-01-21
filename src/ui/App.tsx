@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react'
 import * as colors from 'src/style/colors'
 import Main from './Main'
 import UploadSvg from './UploadSvg'
-import {useAppSelector} from '../state/hooks'
+import {useAppSelector} from 'src/state/hooks'
 
 const AppStyle = {
     display: 'inline-block',
@@ -12,7 +12,7 @@ const AppStyle = {
 }
 
 export default function App() {
-    const pathDescriptions = useAppSelector(state => state.geometry.pathDescriptions)
+    const pathDescriptions = useAppSelector(state => state.geometry.svgPaths)
     const tab = pathDescriptions ? <Main/> : <UploadSvg/>
 
     return <div style={AppStyle}>{tab}</div>

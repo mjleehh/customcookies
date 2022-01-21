@@ -1,6 +1,6 @@
 import {Mesh} from 'src/geometry/types'
 
-export default function serialize_obj(meshes: Mesh[]): string {
+export default function serializeToObj(meshes: Mesh[]): string {
     let offset = 1
     let vertices = ''
     let faces = ''

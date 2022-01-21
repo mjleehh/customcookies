@@ -1,20 +1,21 @@
 import React, {useRef, useState} from 'react'
 import Preview2d from './Preview2d'
-import TesselatingBrush from 'src/processing/TesselatingBrush'
-import {parsePath} from 'src/processing/parse_paths'
-import {Mesh, Path} from '../geometry/types'
+import TesselatingPathBrush from 'src/processing/TesselatingPathBrush'
+import paintSvgPath from 'src/processing/svg/paintSvgPath'
+import {Mesh, Path} from 'src/geometry/types'
 import {Button, InputNumber, Switch} from 'antd'
-import serialize_obj from 'src/processing/serialize_obj'
+import serialize_obj from 'src/processing/serializeToObj'
 import FileSaver from 'file-saver'
 import Preview3d from './Preview3d'
 import PathPainter from 'src/processing/PathPainter'
-import {generateMesh, offset, Side} from '../generateMesh'
+import {generateMesh, offset, Side} from 'src/generateMesh'
 import * as colors from 'src/style/colors'
 import 'src/state/geometry'
 import {toInteger} from 'lodash'
-import {useAppSelector} from '../state/hooks'
+import {useAppSelector} from 'src/state/hooks'
 import {OffsetPath, resetGeometry, setGeometry} from 'src/state/geometry'
-import {dispatch} from '../state/store'
+import {dispatch} from 'src/state/store'
+import {SvgPath} from '../processing/svg/types'
 
 const AppStyle = {
     display: 'inline-block',
@@ -24,14 +25,14 @@ const AppStyle = {
 }
 
 export default function Main() {
-    const pathDescriptions = useAppSelector<string[] | null>(state => state.geometry.pathDescriptions)
+    const svgPaths = useAppSelector<SvgPath[] | null>(state => state.geometry.svgPaths)
     const meshes = useAppSelector<Mesh[] | null>(state => state.geometry.meshes)
     const paths = useAppSelector<OffsetPath[] | null>(state => state.geometry.paths)
 
     const onReset = () => {dispatch(resetGeometry())}
 
     const onUpdate = () => {
-        if (!pathDescriptions) {
+        if (!svgPaths) {
             return
         }
 
@@ -46,13 +47,13 @@ export default function Main() {
         }
 
         try {
-            const tesselatingBrush = new TesselatingBrush(tesellation)
+            const tesselatingBrush = new TesselatingPathBrush(tesellation)
             const painter = new PathPainter(tesselatingBrush)
 
             let meshes = [] as Mesh[]
             let paths = [] as OffsetPath[]
-            for (let pathDescription of pathDescriptions) {
-                parsePath(pathDescription, painter)
+            for (let pathDescription of svgPaths) {
+                paintSvgPath(pathDescription, painter)
                 const {path} = tesselatingBrush
                 const offsetPath = {
                     profile: path,

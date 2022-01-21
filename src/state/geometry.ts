@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Mesh, Path, Vector} from 'src/geometry/types'
+import {SvgPath} from 'src/processing/svg/types'
 
 export interface OffsetPath {
     profile: Path
@@ -8,13 +9,13 @@ export interface OffsetPath {
 }
 
 interface GeometryState {
-    pathDescriptions: string[] | null
+    svgPaths: SvgPath[] | null
     meshes: Mesh[] | null
     paths: OffsetPath[] | null
 }
 
-const initialState = {
-    pathDescriptions: null,
+const initialState: GeometryState = {
+    svgPaths: null,
     meshes: null,
     paths: null
 }
@@ -28,13 +29,13 @@ const geometrySlice = createSlice({
     name: 'geometry',
     initialState,
     reducers: {
-        'setPathsDescriptions': (state: GeometryState, {payload}: PayloadAction<string[]>) => {state.pathDescriptions = payload},
-        'setGeometry': (state: GeometryState, {payload: {meshes, paths}}: PayloadAction<GeometryActionPayload>) => {
+        'setPathsDescriptions': (state, {payload}: PayloadAction<SvgPath[]>) => {state.svgPaths = payload},
+        'setGeometry': (state, {payload: {meshes, paths}}: PayloadAction<GeometryActionPayload>) => {
             state.meshes = meshes
             state.paths = paths
         },
         'resetGeometry': state => {
-            state.pathDescriptions = null
+            state.svgPaths = null
             state.paths = null
             state.meshes = null
         }

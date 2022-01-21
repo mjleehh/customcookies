@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
-import extractPathsFromSvg from 'src/processing/extractPathsFromSvg'
+import extractPathsFromSvg from 'src/processing/svg/extractPathsFromSvg'
 import {useAppDispatch} from 'src/state/hooks'
 import {setPathsDescriptions} from 'src/state/geometry'
 

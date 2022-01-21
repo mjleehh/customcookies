@@ -1,5 +1,6 @@
 import PathBrush from './PathBrush'
-import {Vector} from '../geometry/types'
+import {Vector} from 'src/geometry/types'
+import * as g from 'src/geometry/operations'
 
 export default class PathPainter {
     constructor(b: PathBrush) {
@@ -48,8 +49,12 @@ export default class PathPainter {
         this.cv = c2Abs
     }
 
-    continuousCurveTo(c2x: number, c2y: number, x: number, y: number, relative: boolean): void {
-        throw 'continuous curves are not yet implemented'
+    continuousCubicCurveTo(c2x: number, c2y: number, x: number, y: number, relative: boolean): void {
+        if (!this.cv) {
+            throw 'no previous CV for continuous curve'
+        }
+        const c1Abs = g.scale(-1, this.cv)
+        this.cubicCurveTo(g.X(c1Abs), g.Y(c1Abs), c2x, c2y, x, y, relative)
     }
 
     private calculateAbsolute(x: number, y: number, relative: boolean): Vector {

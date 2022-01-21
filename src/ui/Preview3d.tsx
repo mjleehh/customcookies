@@ -11,8 +11,6 @@ import * as g from 'src/geometry/operations'
 
 const CAMERA_FOV = 50
 
-
-
 function viewDistToRotationDelta(fractionOfViewDist: number, cameraDist: number, radius: number): number {
     return g.deg(Math.atan(fractionOfViewDist * (cameraDist / radius - 1) * Math.tan(CAMERA_FOV)))
 }
@@ -38,13 +36,11 @@ function meshesToThreeGeometry(meshes: Mesh[]): t.BufferGeometry {
     return geometry
 }
 
-
 function setupGeometry(meshes: Mesh[]): {group: t.Group, radius: number} {
     const geometry = meshesToThreeGeometry(meshes)
     const {radius} = geometry.boundingSphere as  t.Sphere
 
     const solidMaterial = new t.MeshBasicMaterial({color: colors.surface, wireframe: false, side: t.FrontSide})
-    //const solidMaterial = new t.MeshNormalMaterial({wireframe: false, side: t.FrontSide})
     const solid = new t.Mesh(geometry, solidMaterial)
     const wireframeMaterial = new t.MeshBasicMaterial({color: colors.wireframe, wireframe: true})
     const wireframe = new t.Mesh(geometry, wireframeMaterial)
@@ -82,7 +78,6 @@ export default function Preview3d({meshes, size}: Preview3dProps) {
         if (e.button === 0) {
             const position: Vector = [e.clientX, e.clientY]
             setStartDragState({position, horizontal, vertical})
-            console.log('start drag', e)
         }
     }
     const onDrag: React.MouseEventHandler = e => {

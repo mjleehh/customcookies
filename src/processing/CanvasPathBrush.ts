@@ -1,6 +1,6 @@
-import {Vector} from '../geometry/types'
+import PathBrush from 'src/processing/PathBrush'
 
-export default class CanvasPathBrush {
+export default class CanvasPathBrush implements PathBrush {
     constructor(p: CanvasRenderingContext2D) {
         this.p = p
     }
@@ -25,6 +25,10 @@ export default class CanvasPathBrush {
     close(): void {
         this.p.closePath()
         this.p.stroke()
+    }
+
+    finalize() {
+
     }
 
     private p: CanvasRenderingContext2D
