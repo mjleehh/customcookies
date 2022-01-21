@@ -66,3 +66,10 @@ export function scale(s: number, v : Vector): Vector {
     return [s * X(v), s * Y(v)]
 }
 
+export function deg(angle: number) {
+    return angle / Math.PI * 180
+}
+
+export function rad(angle: number) {
+    return angle / 180 * Math.PI
+}

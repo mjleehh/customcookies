@@ -6,21 +6,15 @@ import _ from 'lodash'
 import {useAppSelector} from 'src/state/hooks'
 import * as colors from 'src/style/colors'
 import {dispatch} from 'src/state/store'
-import {setRotations} from 'src/state/rotation'
+import {setRotations, zoomIn, zoomOut} from 'src/state/rotation'
 import * as g from 'src/geometry/operations'
 
 const CAMERA_FOV = 50
 
-function deg(angle: number) {
-    return angle / Math.PI * 180
-}
 
-function rad(angle: number) {
-    return angle / 180 * Math.PI
-}
 
 function viewDistToRotationDelta(fractionOfViewDist: number, cameraDist: number, radius: number): number {
-    return deg(Math.atan(fractionOfViewDist * (cameraDist / radius - 1) * Math.tan(CAMERA_FOV)))
+    return g.deg(Math.atan(fractionOfViewDist * (cameraDist / radius - 1) * Math.tan(CAMERA_FOV)))
 }
 
 function meshesToThreeGeometry(meshes: Mesh[]): t.BufferGeometry {
@@ -91,7 +85,6 @@ export default function Preview3d({meshes, size}: Preview3dProps) {
             console.log('start drag', e)
         }
     }
-
     const onDrag: React.MouseEventHandler = e => {
         if (e.button !== 0) {
             setStartDragState(null)
@@ -109,18 +102,24 @@ export default function Preview3d({meshes, size}: Preview3dProps) {
             ]))
         }
     }
-
     const onStopDrag: React.MouseEventHandler = e => {
         setStartDragState(null)
     }
+    const onMouseWheel: React.WheelEventHandler = e => {
+        if (e.deltaY < 0) {
+            dispatch(zoomIn())
+        } else if (e.deltaY > 0) {
+            dispatch(zoomOut())
+        }
+    } 
 
     if (meshes) {
         const {group, radius} = setupGeometry(meshes)
         scene.add(group)
         const camDistance = radius / Math.tan(t.MathUtils.degToRad(CAMERA_FOV) / 2) * zoom
         camera.position.set(0, 0, camDistance)
-        group.rotation.y = rad(horizontal)
-        group.rotation.x = rad(vertical)
+        group.rotation.y = g.rad(horizontal)
+        group.rotation.x = g.rad(vertical)
         viewRadius = radius
     }
 
@@ -143,5 +142,6 @@ export default function Preview3d({meshes, size}: Preview3dProps) {
                 onMouseMove={onDrag}
                 onMouseUp={onStopDrag}
                 onMouseLeave={onStopDrag}
+                onWheel={onMouseWheel}
     />
 }
