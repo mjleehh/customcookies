@@ -1,7 +1,7 @@
-import {Face, Mesh, Path, Vector, Vector3} from './geometry/types'
+import {Face, Mesh, Path, Vector, Vector3} from '../geometry/types'
 import * as m from 'mathjs'
 import * as g from 'src/geometry/operations'
-import {OffsetPath} from './state/geometry'
+import {OffsetPath} from '../state/geometry'
 
 function direction(base: Vector, tip: Vector): Vector {
     const v = g.sub(tip, base)

@@ -5,7 +5,7 @@ import PathBrush from './PathBrush'
 import * as g from '../geometry/operations'
 import _ from 'lodash'
 
-export default class TesselatingPathBrush implements PathBrush {
+export default class TessellatingPathBrush implements PathBrush {
     constructor(tesselation: number) {
         if (tesselation < 0) {
             throw 'tesselation level must be at least 1'
