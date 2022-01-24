@@ -19,8 +19,8 @@ const view2dSlice = createSlice({
     name: 'view2d',
     initialState,
     reducers: {
-        'moveLeft': state => {state.translateX -= TRANSLATION_STEP},
-        'moveRight': state => {state.translateX += TRANSLATION_STEP},
+        'moveLeft': state => {state.translateX += TRANSLATION_STEP},
+        'moveRight': state => {state.translateX -= TRANSLATION_STEP},
         'moveUp': state => {state.translateY += TRANSLATION_STEP},
         'moveDown': state => {state.translateY -= TRANSLATION_STEP},
         'enlarge': state => {state.zoom *= ZOOM_FACTOR},
