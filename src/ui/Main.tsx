@@ -11,6 +11,7 @@ import {useAppSelector} from 'src/state/hooks'
 import {resetGeometry, updateGeometry} from 'src/state/geometry'
 import {dispatch} from 'src/state/store'
 import PathView from './PathView'
+import {ThreeCacheProvider} from './ThreeCache'
 
 
 
@@ -55,7 +56,10 @@ export default function Main() {
         <div className="banner">Cookie Customizer</div>
         <div className="views">
             {pathView}
-            <Preview3d meshes={meshes} size={{width: 300, height: 300}}/>
+            <ThreeCacheProvider meshes={meshes}>
+                <Preview3d size={{width: 300, height: 300}}/>
+            </ThreeCacheProvider>
+            {/*<Preview3d meshes={meshes} size={{width: 300, height: 300}}/>*/}
         </div>
         <div className="inputStyle">
             {/*<div><label>path</label><input defaultValue={defaultCmds} ref={cmdsInput}/></div>*/}

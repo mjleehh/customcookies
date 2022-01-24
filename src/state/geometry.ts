@@ -84,4 +84,5 @@ const geometrySlice = createSlice({
 })
 
 export const {setPathsDescriptions, resetGeometry, updateGeometry} = geometrySlice.actions
+
 export default geometrySlice.reducer

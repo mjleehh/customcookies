@@ -1,61 +1,17 @@
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
+import {Size, Vector} from 'src/geometry/types'
+import {ThreeCacheContext, ThreeCacheProvider} from './ThreeCache'
+import {useAppSelector} from '../state/hooks'
+import {
+    calculateInitialCamDistance,
+    newThreeCamera,
+    newThreeScene,
+    viewDistToRotationDelta
+} from '../state/three_geometry'
+import {dispatch} from '../state/store'
+import {setRotations, zoomIn, zoomOut} from '../state/view3d'
 import * as t from 'three'
-import {useEffect, useRef} from 'react'
-import {Mesh, Size, Vector} from 'src/geometry/types'
-import _ from 'lodash'
-import {useAppSelector} from 'src/state/hooks'
-import * as colors from 'src/style/colors'
-import {dispatch} from 'src/state/store'
-import {setRotations, zoomIn, zoomOut} from 'src/state/view3d'
 import * as g from 'src/geometry/operations'
-
-const CAMERA_FOV = 50
-
-function viewDistToRotationDelta(fractionOfViewDist: number, cameraDist: number, radius: number): number {
-    return g.deg(Math.atan(fractionOfViewDist * (cameraDist / radius - 1) * Math.tan(CAMERA_FOV)))
-}
-
-function meshesToThreeGeometry(meshes: Mesh[]): t.BufferGeometry {
-    const geometry = new t.BufferGeometry()
-
-    let offset = 0
-    let allFaces = [] as number[]
-    let allVertices = [] as number[]
-
-    for (let mesh of meshes) {
-        const {vertices} = mesh
-        allFaces = allFaces.concat(_.flatten(mesh.faces).map(idx => idx + offset))
-        allVertices = allVertices.concat(_.flatten(vertices))
-        offset += vertices.length
-    }
-    geometry.setIndex(allFaces)
-    geometry.setAttribute( 'position', new t.Float32BufferAttribute(allVertices, 3 ) )
-    geometry.center()
-    geometry.computeVertexNormals()
-    geometry.computeBoundingSphere()
-    return geometry
-}
-
-function setupGeometry(meshes: Mesh[]): {group: t.Group, radius: number} {
-    const geometry = meshesToThreeGeometry(meshes)
-    const {radius} = geometry.boundingSphere as  t.Sphere
-
-    const solidMaterial = new t.MeshBasicMaterial({color: colors.surface, wireframe: false, side: t.FrontSide})
-    const solid = new t.Mesh(geometry, solidMaterial)
-    const wireframeMaterial = new t.MeshBasicMaterial({color: colors.wireframe, wireframe: true})
-    const wireframe = new t.Mesh(geometry, wireframeMaterial)
-
-    const group = new t.Group()
-    group.add(solid)
-    group.add(wireframe)
-
-    return {group, radius}
-}
-
-type Preview3dProps = {
-    meshes: Mesh[] | null
-    size: Size
-}
 
 type StartDragState = {
     position: Vector
@@ -63,15 +19,18 @@ type StartDragState = {
     vertical: number
 } | null
 
-export default function Preview3d({meshes, size}: Preview3dProps) {
+type Preview3dProps = {
+    size: Size
+}
+
+export default function Preview3d({size}: Preview3dProps) {
     const horizontal = useAppSelector(state => state.view3d.horizontal)
     const vertical = useAppSelector(state => state.view3d.vertical)
     const zoom = useAppSelector(state => state.view3d.zoom)
+    const geometry = React.useContext(ThreeCacheContext)
 
-    const scene = new t.Scene()
-    scene.background = new t.Color(colors.background)
-    const camera = new t.PerspectiveCamera(CAMERA_FOV, 1, 0.1, 2000)
-    let viewRadius = -1
+    const camera = newThreeCamera()
+    const scene = newThreeScene()
 
     const [startDragState, setStartDragState] = useState<StartDragState>(null)
     const onStartDrag: React.MouseEventHandler = e => {
@@ -85,12 +44,12 @@ export default function Preview3d({meshes, size}: Preview3dProps) {
             setStartDragState(null)
         }
 
-        if (viewRadius > 0 && startDragState !== null) {
+        if (geometry && startDragState !== null) {
             const delta = g.sub([e.clientX, e.clientY], startDragState.position)
             const fractionOfViewDistX = g.X(delta) / size.width
-            const angleX = viewDistToRotationDelta(fractionOfViewDistX, camera.position.z, viewRadius)
+            const angleX = viewDistToRotationDelta(fractionOfViewDistX, camera.position.z, geometry.radius)
             const fractionOfViewDistY = g.Y(delta) / size.width
-            const angleY = viewDistToRotationDelta(fractionOfViewDistY, camera.position.z, viewRadius)
+            const angleY = viewDistToRotationDelta(fractionOfViewDistY, camera.position.z, geometry.radius)
             dispatch(setRotations([
                 -10 * angleX + startDragState.horizontal,
                 -10 * angleY + startDragState.vertical,
@@ -106,16 +65,16 @@ export default function Preview3d({meshes, size}: Preview3dProps) {
         } else if (e.deltaY > 0) {
             dispatch(zoomOut())
         }
-    } 
+    }
 
-    if (meshes) {
-        const {group, radius} = setupGeometry(meshes)
-        scene.add(group)
-        const camDistance = radius / Math.tan(t.MathUtils.degToRad(CAMERA_FOV) / 2) * zoom
+    if (geometry) {
+        const transformGroup = new t.Group()
+        transformGroup.add(geometry.group)
+        const camDistance = calculateInitialCamDistance(geometry.radius) * zoom
         camera.position.set(0, 0, camDistance)
-        group.rotation.y = g.rad(horizontal)
-        group.rotation.x = g.rad(vertical)
-        viewRadius = radius
+        transformGroup.rotation.y = g.rad(horizontal)
+        transformGroup.rotation.x = g.rad(vertical)
+        scene.add(transformGroup)
     }
 
     // hook up three
