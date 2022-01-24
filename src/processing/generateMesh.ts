@@ -54,7 +54,7 @@ export function offset({data, isClosed}: Path, d: number, side: Side): Vector[] 
     const res = [] as Vector[]
 
     for (let i = 0; i < data.length; ++i) {
-        const [_, t1] = normalsFromIndex(i)
+        const [, t1] = normalsFromIndex(i)
         const [e0, t0] = normalsFromIndex(i - 1)
 
         let pi = [0, 0] as Vector
@@ -74,7 +74,7 @@ export function offset({data, isClosed}: Path, d: number, side: Side): Vector[] 
 export function generateMesh({profile, left, right}: OffsetPath, height: number): Mesh {
     const length = profile.data.length
     if (right.length != length || left.length != length) {
-        throw 'curve lengths missmatch'
+        throw 'curve lengths mismatch'
     }
 
     const profileIdx = (i: number) => i % length

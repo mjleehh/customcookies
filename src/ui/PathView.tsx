@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react'
-import {Box, Path, Size, Vec, Vector} from 'src/geometry/types'
+import {Box, Size, Vec} from 'src/geometry/types'
 import * as colors from 'src/style/colors'
 import * as g from 'src/geometry/operations'
 import {useAppSelector} from '../state/hooks'

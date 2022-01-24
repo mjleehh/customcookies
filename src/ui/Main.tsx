@@ -62,11 +62,10 @@ export default function Main() {
             {/*<Preview3d meshes={meshes} size={{width: 300, height: 300}}/>*/}
         </div>
         <div className="inputStyle">
-            {/*<div><label>path</label><input defaultValue={defaultCmds} ref={cmdsInput}/></div>*/}
             <div><label>tessellation n</label><InputNumber  defaultValue={10} min={1} ref={tessellationInput}/></div>
             <div><label>thickness d</label><InputNumber defaultValue={2} min={1} max={20} ref={thicknessInput}/></div>
             <div><label>show offset</label><Switch onChange={updateShowOffsets}/></div>
-            <div><label>show tesselated</label><Switch defaultChecked={showTessellated} onChange={updateShowTessellated}/></div>
+            <div><label>show tessellated</label><Switch defaultChecked={showTessellated} onChange={updateShowTessellated}/></div>
             <Button onClick={onUpdate}>update</Button>
             <Button onClick={onSave} disabled={!meshes}>save</Button>
             <Button onClick={onReset}>reset</Button>

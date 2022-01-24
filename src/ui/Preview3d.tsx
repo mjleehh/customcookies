@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Size, Vector} from 'src/geometry/types'
-import {ThreeCacheContext, ThreeCacheProvider} from './ThreeCache'
+import {ThreeCacheContext} from './ThreeCache'
 import {useAppSelector} from '../state/hooks'
 import {
     calculateInitialCamDistance,

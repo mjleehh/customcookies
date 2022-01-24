@@ -1,10 +1,9 @@
 import PathPainter from '../PathPainter'
-import parseSvgPath from './parseSvgPath'
 import {Command, SvgPath, SvgPathSegment} from './types'
 
 export default function paintSvgPath(p: PathPainter, path: SvgPath) {
     if (path.length < 1) {
-        throw 'invalid emtpy path'
+        throw 'invalid empty path'
     }
     const [first, ...tail] = path
     paintSvgPathSegment(p, first, true)
@@ -103,7 +102,7 @@ function feedContinuousCubicCurve(p: PathPainter, {params, isRelative}: Command)
     }
 }
 
-function feedQuadricCurve(p: PathPainter, {params, isRelative}: Command): void {
+function feedQuadraticCurve(p: PathPainter, {params, isRelative}: Command): void {
     if (params.length % 4 != 0) {
         throw `line to command supplied invalid number of arguments: ${params.length}`
     }
@@ -111,7 +110,7 @@ function feedQuadricCurve(p: PathPainter, {params, isRelative}: Command): void {
     let curvePoints = params
     while (curvePoints.length > 0) {
         const [cx, cy, x, y] = curvePoints
-        p.quadricCurveTo(cx, cy, x, y, isRelative)
+        p.quadraticCurveTo(cx, cy, x, y, isRelative)
         curvePoints = curvePoints.slice(4)
     }
 }
@@ -145,7 +144,7 @@ function feedCommand(p: PathPainter, cmd: Command): void {
         }
         case 'Q':
         case 'q': {
-            feedQuadricCurve(p, cmd)
+            feedQuadraticCurve(p, cmd)
             return
         }
         case 'Z':

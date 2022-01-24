@@ -14,7 +14,7 @@ export default class CanvasPathBrush implements PathBrush {
         this.p.lineTo(x, y)
     }
 
-    quadricCurveTo(cx: number, cy: number, x: number, y: number): void {
+    quadraticCurve(cx: number, cy: number, x: number, y: number): void {
         this.p.quadraticCurveTo(cx, cy, x, y)
     }
 

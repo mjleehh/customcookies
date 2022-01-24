@@ -1,9 +1,8 @@
 import 'src/geometry/splines'
-import {cubicSpline, quadricSpline} from 'src/geometry/splines'
+import {cubicSpline, quadraticSpline} from 'src/geometry/splines'
 import {Path, Vector} from 'src/geometry/types'
 import PathBrush from './PathBrush'
 import * as g from '../geometry/operations'
-import _ from 'lodash'
 
 export default class TessellatingPathBrush implements PathBrush {
     constructor(tesselation: number) {
@@ -25,8 +24,8 @@ export default class TessellatingPathBrush implements PathBrush {
         this.prevCV = null
     }
 
-    quadricCurveTo(cx: number, cy: number, x: number, y: number): void {
-        const f = quadricSpline(this.pos, [cx, cy], [x, y])
+    quadraticCurve(cx: number, cy: number, x: number, y: number): void {
+        const f = quadraticSpline(this.pos, [cx, cy], [x, y])
         for (let i = 1; i < this.tesselation; ++i) {
             const [vx, vy] = f(i/this.tesselation)
             this.addVertex(vx, vy)
@@ -86,7 +85,7 @@ export default class TessellatingPathBrush implements PathBrush {
         this.currentSegment.push([x, y])
     }
 
-    private tesselation: number
+    private readonly tesselation: number
     private prevCV: Vector | null = null
     private isClosed: boolean = false
     private currentSegment: Vector[] = []

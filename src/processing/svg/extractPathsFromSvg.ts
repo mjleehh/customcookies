@@ -8,13 +8,13 @@ function processPaths(description: string): SvgPath {
         throw `bad SVG path ${description}`
     }
 
-    const pathStrs = []
+    const pathStrings = []
     let rest = description
     for (let item of Array.from(description.matchAll(/[mM]/g)).reverse()) {
-        pathStrs.push(rest.slice(item.index).trim())
+        pathStrings.push(rest.slice(item.index).trim())
         rest = rest.slice(0, item.index)
     }
-    return pathStrs.map(parseSvgPath).reverse()
+    return pathStrings.map(parseSvgPath).reverse()
 }
 
 

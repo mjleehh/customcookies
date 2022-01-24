@@ -1,5 +1,5 @@
 import {
-    commandRegExp, DELIMITER_SYMS,
+    commandRegExp, DELIMITER_CHARS,
     pathRegExp
 } from './regular_expressions'
 import {Command, SvgPathSegment} from './types'
@@ -18,7 +18,7 @@ function evaluateCommands(commandsStr: string): Command[] {
         res.push({
             name,
             // FIXME: parseFloat is too sloppy
-            params: paramStr.split(DELIMITER_SYMS).filter(e => e.length > 0).map(parseFloat) as number[],
+            params: paramStr.split(DELIMITER_CHARS).filter(e => e.length > 0).map(parseFloat) as number[],
             isRelative: name === symbol,
         })
         rest = rest.slice(commandStr.length)
@@ -31,7 +31,7 @@ export default function parseSvgPath(str: string): SvgPathSegment  {
     if (!allMatch) {
         throw `unsupported SVG path: ${str}`
     }
-    const [_, moveSection, commandSection, __, closedSection] = allMatch
+    const [, moveSection, commandSection, , closedSection] = allMatch
     return {
         move: evaluateCommands(moveSection)[0],
         commands: evaluateCommands(commandSection),

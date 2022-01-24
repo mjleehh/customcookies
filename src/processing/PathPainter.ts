@@ -32,19 +32,19 @@ export default class PathPainter {
     }
 
     horizontalLineTo(x: number, relative: boolean): void {
-        const [_, yPos] = this.pos
+        const [, yPos] = this.pos
         this.lineTo(x, relative ? 0 : yPos, relative)
     }
 
     verticalLineTo(y: number, relative: boolean): void {
-        const [xPos, _] = this.pos
+        const [xPos,] = this.pos
         this.lineTo(relative ? 0 : xPos, y, relative)
     }
 
-    quadricCurveTo(cx: number, cy: number, x: number, y: number, relative: boolean): void {
+    quadraticCurveTo(cx: number, cy: number, x: number, y: number, relative: boolean): void {
         const cvAbs = this.calculateAbsolute(cx, cy, relative)
         const pAbs = this.updateAbsolute(x, y, relative)
-        this.b.quadricCurveTo(cvAbs[0], cvAbs[1], pAbs[0], pAbs[1])
+        this.b.quadraticCurve(cvAbs[0], cvAbs[1], pAbs[0], pAbs[1])
         this.pos = pAbs
         this.cv = cvAbs
     }

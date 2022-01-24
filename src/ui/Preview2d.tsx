@@ -1,14 +1,12 @@
 import React, {useEffect, useRef} from 'react'
-import {Box, Path, Size, Vec, Vector} from '../geometry/types'
+import {Box, Size, Vec, Vector} from '../geometry/types'
 import * as colors from 'src/style/colors'
 import * as g from 'src/geometry/operations'
 import {OffsetPath} from 'src/state/geometry'
-import {mergeBoxes} from 'src/geometry/operations'
-import _ from 'lodash'
 import {useAppSelector} from '../state/hooks'
-import View2d, {View2dState} from '../state/view2d'
+import {View2dState} from '../state/view2d'
 
-function drawTesselated(p: CanvasRenderingContext2D, vertices: Vector[], isClosed = false) {
+function drawTessellated(p: CanvasRenderingContext2D, vertices: Vector[], isClosed = false) {
     p.beginPath()
     const [x0, y0] = vertices[0]
     p.moveTo(x0, y0)
@@ -62,12 +60,12 @@ export default function Preview2d({size, showOffsets}: Preview2dProps) {
             for (let path of paths) {
                 const {data, isClosed} = path.profile
                 context.strokeStyle = colors.path
-                drawTesselated(context, data, isClosed)
+                drawTessellated(context, data, isClosed)
 
                 if (showOffsets) {
                     context.strokeStyle = colors.pathOffset
-                    drawTesselated(context, path.right, isClosed)
-                    drawTesselated(context, path.left, isClosed)
+                    drawTessellated(context, path.right, isClosed)
+                    drawTessellated(context, path.left, isClosed)
                 }
             }
         }

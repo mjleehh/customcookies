@@ -1,4 +1,4 @@
-import {Box, Path, Size, Vector} from './types'
+import {Box, Size, Vector} from './types'
 
 export function X(v: Vector) {
     return v[0]

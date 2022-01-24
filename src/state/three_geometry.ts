@@ -24,7 +24,7 @@ export function newThreeScene() {
     return scene
 }
 
-export function newEmtpyThreeGeometry(): t.Group {
+export function newEmptyThreeGeometry(): t.Group {
     return new t.Group()
 }
 

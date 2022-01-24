@@ -1,5 +1,4 @@
 import React from 'react'
-import * as t from 'three'
 import {Mesh} from 'src/geometry/types'
 import {CachedGeometry, updateThreeCache} from 'src/state/three_geometry'
 
