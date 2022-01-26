@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react'
-import Preview2d from './Preview2d'
+import Preview2d from './paths/Preview2d'
 import {Mesh} from 'src/geometry/types'
 import {Button, InputNumber, Switch} from 'antd'
 import serialize_obj from 'src/processing/serializeToObj'
@@ -10,8 +10,9 @@ import {toInteger} from 'lodash'
 import {useAppSelector} from 'src/state/hooks'
 import {resetGeometry, updateGeometry} from 'src/state/geometry'
 import {dispatch} from 'src/state/store'
-import PathView from './PathView'
+import PathView from './paths/PathView'
 import {ThreeCacheProvider} from './ThreeCache'
+import PathEditor from './paths/PathEditor'
 
 
 
@@ -55,7 +56,7 @@ export default function Main() {
     return <main>
         <div className="banner">Cookie Customizer</div>
         <div className="views">
-            {pathView}
+            <PathEditor size={{width: 300, height: 300}}>{pathView}</PathEditor>
             <ThreeCacheProvider meshes={meshes}>
                 <Preview3d size={{width: 300, height: 300}}/>
             </ThreeCacheProvider>

@@ -1,10 +1,11 @@
 import React, {useEffect, useRef} from 'react'
-import {Box, Size, Vec, Vector} from '../geometry/types'
+import {Box, Size, Vec, Vector} from '../../geometry/types'
 import * as colors from 'src/style/colors'
 import * as g from 'src/geometry/operations'
 import {OffsetPath} from 'src/state/geometry'
-import {useAppSelector} from '../state/hooks'
-import {View2dState} from '../state/view2d'
+import {useAppSelector} from '../../state/hooks'
+import {View2dState} from '../../state/view2d'
+import setViewWindow from './setViewWindow'
 
 function drawTessellated(p: CanvasRenderingContext2D, vertices: Vector[], isClosed = false) {
     p.beginPath()
@@ -30,7 +31,8 @@ export default function Preview2d({size, showOffsets}: Preview2dProps) {
 
     const paths = useAppSelector<OffsetPath[] | null>(state => state.geometry.paths)
     const boundingBox = useAppSelector<Box | null>(state => state.geometry.boundingBox)
-    const {translateX, translateY, zoom} = useAppSelector<View2dState>(state => state.view2d)
+    const view = useAppSelector<View2dState>(state => state.view2d)
+    const selectionIndex = useAppSelector<number>(state => state.parameters.selectionIndex)
 
     useEffect(() => {
         // make sure canvas updates properly
@@ -39,27 +41,15 @@ export default function Preview2d({size, showOffsets}: Preview2dProps) {
             return
         }
 
-        context.resetTransform()
-        context.clearRect(0, 0, size.width, size.height)
+        if (boundingBox) {
+            setViewWindow(context, size, boundingBox, view)
+        }
 
-        if (paths && boundingBox && paths.length > 0) {
-            const pathCenter = g.add(g.center(boundingBox), [translateX, translateY])
-            const canvasCenter = Vec(size.width / 2, size.height / 2)
-            const pathSize = g.size(boundingBox)
-
-            const canvasAspect = size.width / size.height
-            const pathAspect = pathSize.width / pathSize.height
-
-            const scale = (pathAspect > canvasAspect ? size.width / pathSize.width : size.height / pathSize.height) * 0.95 * zoom
-            const translation = g.sub(canvasCenter, g.scale(scale, pathCenter))
-
-            context.setTransform(scale, 0, 0, scale, g.X(translation), g.Y(translation))
-
-            context.lineWidth = 1 / scale
-
-            for (let path of paths) {
+        if (paths) {
+            for (let i = 0; i < paths.length; ++i) {
+                const path = paths[i]
                 const {data, isClosed} = path.profile
-                context.strokeStyle = colors.path
+                context.strokeStyle = i === selectionIndex ? colors.selectedPath : colors.path
                 drawTessellated(context, data, isClosed)
 
                 if (showOffsets) {
@@ -69,7 +59,7 @@ export default function Preview2d({size, showOffsets}: Preview2dProps) {
                 }
             }
         }
-    }, [paths, boundingBox, translateX, translateY, zoom])
+    }, [paths, boundingBox, view, selectionIndex])
 
     return <div><canvas ref={canvas} width={size.width} height={size.height}/></div>
 }
