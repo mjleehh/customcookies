@@ -43,9 +43,6 @@ function offsetPathBoundingBox({profile, left, right}: OffsetPath) {
 
 function updateGeometryReducer(state: Draft<GeometryState>, {payload}: PayloadAction<UpdateGeometryActionPayload>) {
     const {tessellation, thickness} = payload
-    const tessellatingBrush = new TessellatingPathBrush(tessellation)
-    const painter = new PathPainter(tessellatingBrush)
-
     if (!state.svgPaths) {
         return
     }
@@ -53,6 +50,8 @@ function updateGeometryReducer(state: Draft<GeometryState>, {payload}: PayloadAc
     let meshes: Mesh[] = []
     let paths: OffsetPath[] = []
     for (let pathDescription of state.svgPaths) {
+        const tessellatingBrush = new TessellatingPathBrush(tessellation)
+        const painter = new PathPainter(tessellatingBrush)
         paintSvgPath(painter, pathDescription)
         const {segments} = tessellatingBrush
         for (let segment of segments) {
