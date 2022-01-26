@@ -1,18 +1,20 @@
 import {createSlice, Draft, PayloadAction} from '@reduxjs/toolkit'
-import {Box, Mesh, Path, Vector} from 'src/geometry/types'
+import {Box, Mesh, Path, PathVertices, Vector} from 'src/geometry/types'
 import {SvgPath} from 'src/processing/svg/types'
 import TessellatingPathBrush from 'src/processing/TessellatingPathBrush'
 import PathPainter from 'src/processing/PathPainter'
 import paintSvgPath from 'src/processing/svg/paintSvgPath'
 import {generateMesh, offset, Side} from 'src/processing/generateMesh'
 import _ from 'lodash'
-import {mergeBoxes} from '../geometry/operations'
+import {calculateBoundingBox, mergeBoxes} from '../geometry/operations'
 import * as g from '../geometry/operations'
+
+const TESSELLATION_FOR_BOUNDING_BOX = 100
 
 export interface OffsetPath {
     profile: Path
-    left: Vector[]
-    right: Vector[]
+    left: PathVertices
+    right: PathVertices
 }
 
 interface GeometryState {
@@ -34,6 +36,11 @@ type UpdateGeometryActionPayload = {
     thickness: number
 }
 
+function offsetPathBoundingBox({profile, left, right}: OffsetPath) {
+    return mergeBoxes(calculateBoundingBox(profile.data),
+        mergeBoxes(calculateBoundingBox(left), calculateBoundingBox(right)))
+}
+
 function updateGeometryReducer(state: Draft<GeometryState>, {payload}: PayloadAction<UpdateGeometryActionPayload>) {
     const {tessellation, thickness} = payload
     const tessellatingBrush = new TessellatingPathBrush(tessellation)
@@ -43,8 +50,8 @@ function updateGeometryReducer(state: Draft<GeometryState>, {payload}: PayloadAc
         return
     }
 
-    let meshes = [] as Mesh[]
-    let paths = [] as OffsetPath[]
+    let meshes: Mesh[] = []
+    let paths: OffsetPath[] = []
     for (let pathDescription of state.svgPaths) {
         paintSvgPath(painter, pathDescription)
         const {segments} = tessellatingBrush
@@ -58,22 +65,42 @@ function updateGeometryReducer(state: Draft<GeometryState>, {payload}: PayloadAc
             meshes.push(generateMesh(offsetPath, 10))
         }
     }
-    const boundingBox = _.transform(paths, (box, path) =>
-            mergeBoxes(box, g.calculateBoundingBox(path.profile.data),
-                g.calculateBoundingBox(path.right),
-                g.calculateBoundingBox(path.left))
-        , g.calculateBoundingBox(paths[0].profile.data))
 
     state.meshes = meshes
     state.paths = paths
-    state.boundingBox = boundingBox
+    state.boundingBox = paths.map(offsetPathBoundingBox).reduce(mergeBoxes)
+}
+
+function setPathsDescriptionsReducer(state: Draft<GeometryState>, {payload}: PayloadAction<SvgPath[]>) {
+    state.svgPaths = payload
+
+    const tessellatingBrush = new TessellatingPathBrush(TESSELLATION_FOR_BOUNDING_BOX)
+    const painter = new PathPainter(tessellatingBrush)
+
+    if (!state.svgPaths) {
+        return
+    }
+
+    const paths: PathVertices[] = []
+    for (let pathDescription of state.svgPaths) {
+        paintSvgPath(painter, pathDescription)
+        const {segments} = tessellatingBrush
+        for (let segment of segments) {
+            paths.push(segment.data)
+        }
+    }
+    // state.boundingBox = _.transform(paths,
+    //     (box, path) => mergeBoxes(box, calculateBoundingBox(path))
+    //     , g.calculateBoundingBox(paths[0]))
+    state.boundingBox = paths.map(calculateBoundingBox).reduce(mergeBoxes)
+
 }
 
 const geometrySlice = createSlice({
     name: 'geometry',
     initialState,
     reducers: {
-        'setPathsDescriptions': (state, {payload}: PayloadAction<SvgPath[]>) => {state.svgPaths = payload},
+        'setPathsDescriptions': setPathsDescriptionsReducer,
         'resetGeometry': state => {
             state.svgPaths = null
             state.paths = null

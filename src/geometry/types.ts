@@ -8,9 +8,11 @@ export type Vector3 = [number, number, number]
 
 export type Face = number[]
 
+export type PathVertices = Vector[]
+
 export type Path = {
     isClosed: boolean
-    data: Vector[]
+    data: PathVertices
 }
 
 export type Mesh = {

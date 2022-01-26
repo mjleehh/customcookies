@@ -1,4 +1,6 @@
-import {Box, Size, Vector} from './types'
+import {Box, PathVertices, Size, Vector} from './types'
+import {SkeletonUtils} from 'three/examples/jsm/utils/SkeletonUtils'
+import findBoneTrackData = SkeletonUtils.findBoneTrackData
 
 export function X(v: Vector) {
     return v[0]
@@ -8,7 +10,7 @@ export function Y(v: Vector) {
     return v[1]
 }
 
-export function calculateBoundingBox(path: Vector[]): Box {
+export function calculateBoundingBox(path: PathVertices): Box {
     let [left, top] = path[0]
     let [right, bottom] = path[0]
 
@@ -35,19 +37,13 @@ export function size(box: Box): Size {
     }
 }
 
-export function mergeBoxes(...boxes: Box[]): Box {
-    if (boxes.length < 1) {
-        throw 'no boxes provided to merge'
+export function mergeBoxes(fst: Box, snd: Box): Box {
+    return {
+        left:   Math.min(fst.left,   snd.left),
+        right:  Math.max(fst.right,  snd.right),
+        top:    Math.min(fst.top,    snd.top),
+        bottom: Math.max(fst.bottom, snd.bottom),
     }
-    let {left, top, right, bottom} = boxes[0]
-    for (let i = 1; i < boxes.length; ++i) {
-        const box = boxes[0]
-        left = box.left < left ? box.left : left
-        right = box.right > right ? box.right : right
-        top = box.top < top ? box.top : top
-        bottom = box.bottom > bottom ? box.bottom : bottom
-    }
-    return {left, top, right, bottom}
 }
 
 export function add(lhs: Vector, rhs: Vector): Vector {
