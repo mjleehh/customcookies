@@ -1,5 +1,7 @@
 # Custom Cookies
 
+Quickly convert simple SVG images into printable cookie cutters
+
 ![screenshot](docs/screenshot.png)
 
 **Warning: This is an early prototype and a toy project!**
