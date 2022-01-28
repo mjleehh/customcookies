@@ -18,6 +18,8 @@ most commonly used slicers.
 
 ![sliced geometry](resources/sliced_italy.png)
 
+![printing](resources/printing.jpg)
+
 ## Usage
 
 Prerequisites: 
