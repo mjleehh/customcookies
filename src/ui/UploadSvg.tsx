@@ -3,6 +3,8 @@ import {useDropzone} from 'react-dropzone'
 import extractPathsFromSvg from 'src/processing/svg/extractPathsFromSvg'
 import {useAppDispatch} from 'src/state/hooks'
 import {setPathsDescriptions} from 'src/state/geometry'
+import {Button} from 'antd'
+import sampleSvg from '!!raw-loader!src/ui/sample_image.svg'
 
 export default function UploadSvg() {
     const dispatch = useAppDispatch()
@@ -23,10 +25,18 @@ export default function UploadSvg() {
     }, [])
     const {getRootProps, getInputProps} = useDropzone({onDrop, maxFiles: 1,})
 
+    function onSample() {
+        const paths = extractPathsFromSvg(sampleSvg)
+        dispatch(setPathsDescriptions(paths))
+    }
+
     return (
-        <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here, or click to select files</p>
+        <div>
+            <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                <p>Drag 'n' drop some files here, or click to select files</p>
+            </div>
+            <Button onClick={onSample}>use example</Button>
         </div>
     )
 }
