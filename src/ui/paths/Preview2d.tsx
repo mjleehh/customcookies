@@ -32,7 +32,7 @@ export default function Preview2d({size, showOffsets}: Preview2dProps) {
     const paths = useAppSelector<OffsetPath[] | null>(state => state.geometry.paths)
     const boundingBox = useAppSelector<Box | null>(state => state.geometry.boundingBox)
     const view = useAppSelector<View2dState>(state => state.view2d)
-    const selectionIndex = useAppSelector<number>(state => state.parameters.selectionIndex)
+    const selectionIndex = useAppSelector<number>(state => state.geometry.selectionIndex)
 
     useEffect(() => {
         // make sure canvas updates properly

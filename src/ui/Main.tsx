@@ -8,11 +8,12 @@ import Preview3d from './Preview3d'
 import 'src/state/geometry'
 import {toInteger} from 'lodash'
 import {useAppSelector} from 'src/state/hooks'
-import {resetGeometry, updateGeometry} from 'src/state/geometry'
+import {resetGeometry, updateAllGeometry} from 'src/state/geometry'
 import {dispatch} from 'src/state/store'
 import PathView from './paths/PathView'
 import {ThreeCacheProvider} from './ThreeCache'
 import PathEditor from './paths/PathEditor'
+import ParameterBox from './ParameterBox'
 
 
 
@@ -22,17 +23,7 @@ export default function Main() {
     const onReset = () => {dispatch(resetGeometry())}
 
     const onUpdate = () => {
-        const tessellation = toInteger(tessellationInput?.current?.value)
-        if (!tessellation) {
-            return
-        }
-
-        const thickness = toInteger(thicknessInput?.current?.value)
-        if (!thickness) {
-            return
-        }
-
-        dispatch(updateGeometry({tessellation, thickness}))
+        dispatch(updateAllGeometry())
     }
 
     const onSave = () => {
@@ -43,9 +34,6 @@ export default function Main() {
         FileSaver.saveAs(new Blob([fileContents], {type: "text/plain;charset=utf-8"}), 'cookiecutter.obj')
     }
 
-    const thicknessInput = useRef<HTMLInputElement>(null)
-    const tessellationInput = useRef<HTMLInputElement>(null)
-
     const [showOffsets, updateShowOffsets] = useState(false)
     const [showTessellated, updateShowTessellated] = useState(true)
 
@@ -54,6 +42,7 @@ export default function Main() {
         : <PathView size={{width: 300, height: 300}}/>
 
     return <main>
+        <ParameterBox/>
         <div className="banner">Cookie Customizer</div>
         <div className="views">
             <PathEditor size={{width: 300, height: 300}}>{pathView}</PathEditor>
@@ -63,8 +52,6 @@ export default function Main() {
             {/*<Preview3d meshes={meshes} size={{width: 300, height: 300}}/>*/}
         </div>
         <div className="inputStyle">
-            <div><label>tessellation n</label><InputNumber  defaultValue={10} min={1} ref={tessellationInput}/></div>
-            <div><label>thickness d</label><InputNumber defaultValue={2} min={1} max={20} ref={thicknessInput}/></div>
             <div><label>show offset</label><Switch onChange={updateShowOffsets}/></div>
             <div><label>show tessellated</label><Switch defaultChecked={showTessellated} onChange={updateShowTessellated}/></div>
             <Button onClick={onUpdate}>update</Button>

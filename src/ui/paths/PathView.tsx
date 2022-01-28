@@ -20,7 +20,7 @@ export default function PathView({size}: PathViewProps) {
     const paths = useAppSelector<SvgPath[] | null>(state => state.geometry.svgPaths)
     const boundingBox = useAppSelector<Box | null>(state => state.geometry.boundingBox)
     const view = useAppSelector<View2dState>(state => state.view2d)
-    const selectionIndex = useAppSelector<number>(state => state.parameters.selectionIndex)
+    const selectionIndex = useAppSelector<number>(state => state.geometry.selectionIndex)
 
     useEffect(() => {
         // make sure canvas updates properly

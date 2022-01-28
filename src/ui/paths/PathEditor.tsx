@@ -1,14 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Box, Size} from 'src/geometry/types'
+import {Box, Size, Vec} from 'src/geometry/types'
 import setViewWindow from './setViewWindow'
-import CanvasPathBrush from '../../processing/CanvasPathBrush'
-import PathPainter from '../../processing/PathPainter'
-import paintSvgPath from '../../processing/svg/paintSvgPath'
-import {useAppDispatch, useAppSelector} from '../../state/hooks'
-import {SvgPath} from '../../processing/svg/types'
-import {View2dState} from '../../state/view2d'
-import {useDispatch} from 'react-redux'
-import {setSelection} from '../../state/parameters'
+import CanvasPathBrush from 'src/processing/CanvasPathBrush'
+import PathPainter from 'src/processing/PathPainter'
+import paintSvgPath from 'src/processing/svg/paintSvgPath'
+import {useAppDispatch, useAppSelector} from 'src/state/hooks'
+import {SvgPath} from 'src/processing/svg/types'
+import {View2dState} from 'src/state/view2d'
+import {setSelection} from 'src/state/geometry'
+import {hideParameterBox, showParameterBox} from 'src/state/ui'
+import zOrder from 'src/ui/zOrder'
 
 function indexToRgb(index: number) {
     if (index < 0 || index > 255) {
@@ -81,15 +82,21 @@ export default function PathEditor({size, children}: React.PropsWithChildren<Pat
             return
         }
         const {data} = context.getImageData(x, y, 1, 1)
-        dispatch(setSelection(rgbToIndex(data)))
+        const selectionId = rgbToIndex(data)
+        dispatch(setSelection(selectionId))
+        if (selectionId < 0) {
+            dispatch(hideParameterBox())
+        } else {
+            dispatch(showParameterBox(Vec(e.pageX, e.pageY)))
+        }
     }
 
     const style: React.CSSProperties = {
-        zIndex: 20,
         position: 'absolute',
         left: 0,
         top: 0,
         ...size,
+        zIndex: zOrder.canvas,
     }
     return <div style={{position: 'relative'}}>
         <div onClick={onClick} style={style}/>
