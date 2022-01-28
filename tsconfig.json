@@ -14,11 +14,7 @@
     },
     "strict": true,
     "sourceMap": true,
-    "target": "esnext",
-    "types": ["src/raw-loader.d.ts", "node"],
-    "allowSyntheticDefaultImports": true
+    "target": "esnext"
   },
-  "exclude": [
-    "node_modules"
-    ]
+  "exclude": ["node_modules"]
 }
