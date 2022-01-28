@@ -83,9 +83,9 @@ export function generateMesh({profile, left, right}: OffsetPath, height: number)
     const liftVertex = (height: number) => (v: Vector): Vector3 => [v[0], v[1], height]
 
     const vertices = [
-        ...profile.data.map(liftVertex(0)),
-        ...right.map(liftVertex(height)),
-        ...left.map(liftVertex(height)),
+        ...profile.data.map(liftVertex(height)),
+        ...right.map(liftVertex(0)),
+        ...left.map(liftVertex(0)),
     ]
     const faces = [] as Face[]
 
