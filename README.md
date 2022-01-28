@@ -14,7 +14,7 @@ most commonly used slicers.
 
 ![svg editor](docs/svg_editor.png)
 
-![sliced geometry](docs/sliced_geometry.png)
+![sliced geometry](docs/sliced_italy.png)
 
 ## Usage
 
