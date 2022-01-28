@@ -2,7 +2,7 @@
 
 Quickly convert simple SVG images into printable cookie cutters
 
-![screenshot](docs/screenshot.png)
+![screenshot](resources/screenshot.png)
 
 **Warning: This is an early prototype and a toy project!**
 
@@ -14,9 +14,9 @@ most commonly used slicers.
 
 **Warning**: most 3D printing materials are **NOT** suitable for food use!
 
-![svg editor](docs/svg_editor.png)
+![svg editor](resources/svg_editor.png)
 
-![sliced geometry](docs/sliced_italy.png)
+![sliced geometry](resources/sliced_italy.png)
 
 ## Usage
 
