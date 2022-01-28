@@ -3,10 +3,11 @@ import {Vector} from 'src/geometry/types'
 
 export interface UiState {
     parameterBoxPosition: Vector | null
+
 }
 
 const initialState: UiState = {
-    parameterBoxPosition: null
+    parameterBoxPosition: null,
 }
 
 const uiSlice = createSlice({

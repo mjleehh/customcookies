@@ -12,6 +12,7 @@ body {
 .banner {
     display: inline-block;
     font-size: 30px;
+    background: dimgrey;
 }
 
 .inputs {

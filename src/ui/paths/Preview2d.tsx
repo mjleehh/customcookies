@@ -1,11 +1,11 @@
 import React, {useEffect, useRef} from 'react'
 import {Box, Size, Vec, Vector} from '../../geometry/types'
 import * as colors from 'src/style/colors'
-import * as g from 'src/geometry/operations'
 import {OffsetPath} from 'src/state/geometry'
 import {useAppSelector} from '../../state/hooks'
 import {View2dState} from '../../state/view2d'
 import setViewWindow from './setViewWindow'
+import {isBoolean} from 'lodash'
 
 function drawTessellated(p: CanvasRenderingContext2D, vertices: Vector[], isClosed = false) {
     p.beginPath()
@@ -23,16 +23,16 @@ function drawTessellated(p: CanvasRenderingContext2D, vertices: Vector[], isClos
 
 type Preview2dProps = {
     size: Size
-    showOffsets: boolean
 }
 
-export default function Preview2d({size, showOffsets}: Preview2dProps) {
+export default function Preview2d({size}: Preview2dProps) {
     const canvas = useRef<HTMLCanvasElement>(null)
 
     const paths = useAppSelector<OffsetPath[] | null>(state => state.geometry.paths)
     const boundingBox = useAppSelector<Box | null>(state => state.geometry.boundingBox)
     const view = useAppSelector<View2dState>(state => state.view2d)
     const selectionIndex = useAppSelector<number>(state => state.geometry.selectionIndex)
+    const showOffsets = useAppSelector<boolean>(state => state.view2d.showPathOffsets)
 
     useEffect(() => {
         // make sure canvas updates properly

@@ -122,7 +122,7 @@ function setPathsDescriptionsReducer(state: Draft<GeometryState>, {payload}: Pay
         }
     }
     state.boundingBox = paths.map(calculateBoundingBox).reduce(mergeBoxes)
-
+    updateAllGeometryReducer(state)
 }
 
 const geometrySlice = createSlice({
