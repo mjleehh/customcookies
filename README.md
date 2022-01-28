@@ -2,6 +2,8 @@
 
 Quickly convert simple SVG images into printable cookie cutters
 
+Find a ready to use version here: <https://mjleehh.github.io/customcookies/>
+
 ![screenshot](resources/screenshot.png)
 
 **Warning: This is an early prototype and a toy project!**
@@ -26,7 +28,8 @@ Prerequisites:
 - make sure you have an up-to-date NodeJS and NPM installed.
 - an up-to-date browser (there is no acceptable reason for using outdated browser versions)
 
-This tool comes as a web app. At this point you have to download and run it manually:
+This tool comes as a web app. To use the most recent version you can bundle it yourself.
+Otherwise just use the link at the start of this document to find a ready to use version online.
 
 1. clone this repo
 2. navigate a command prompt to the repo location
