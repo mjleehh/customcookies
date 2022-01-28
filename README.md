@@ -12,6 +12,8 @@ most commonly used slicers.
 
 **Warning**: most 3D printing materials are **NOT** suitable for food use!
 
+![svg editor](docs/svg_editor.png)
+
 ![sliced geometry](docs/sliced_geometry.png)
 
 ## Usage
