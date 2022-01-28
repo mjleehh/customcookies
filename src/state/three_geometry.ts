@@ -28,22 +28,14 @@ export function newEmptyThreeGeometry(): t.Group {
     return new t.Group()
 }
 
-function meshesToThreeGeometry(meshes: Mesh[]): t.BufferGeometry {
+function meshToThreeGeometry(mesh: Mesh): t.BufferGeometry {
     const geometry = new t.BufferGeometry()
 
-    let offset = 0
-    let allFaces = [] as number[]
-    let allVertices = [] as number[]
+    const faces = _.flatten(mesh.faces)
+    const vertices = _.flatten(mesh.vertices)
 
-    for (let mesh of meshes) {
-        const {vertices} = mesh
-        allFaces = allFaces.concat(_.flatten(mesh.faces).map(idx => idx + offset))
-        allVertices = allVertices.concat(_.flatten(vertices))
-        offset += vertices.length
-    }
-    geometry.setIndex(allFaces)
-    geometry.setAttribute( 'position', new t.Float32BufferAttribute(allVertices, 3 ) )
-    geometry.center()
+    geometry.setIndex(faces)
+    geometry.setAttribute( 'position', new t.Float32BufferAttribute(vertices, 3 ) )
     geometry.computeVertexNormals()
     geometry.computeBoundingSphere()
     return geometry
@@ -55,17 +47,50 @@ export type CachedGeometry = {
 }
 
 export function updateThreeCache(meshes: Mesh[]): CachedGeometry {
-    const geometry = meshesToThreeGeometry(meshes)
-    const {radius} = geometry.boundingSphere as t.Sphere
-
-    const solidMaterial = new t.MeshBasicMaterial({color: colors.surface, wireframe: false, side: t.FrontSide})
-    const solid = new t.Mesh(geometry, solidMaterial)
-    const wireframeMaterial = new t.MeshBasicMaterial({color: colors.wireframe, wireframe: true})
-    const wireframe = new t.Mesh(geometry, wireframeMaterial)
-
     const group = new t.Group()
-    group.add(solid)
-    group.add(wireframe)
+    const selectedMaterial = new t.MeshBasicMaterial({color: colors.selectedSurface, wireframe: false, side: t.FrontSide})
+    const solidMaterial = new t.MeshBasicMaterial({color: colors.surface, wireframe: false, side: t.FrontSide})
+    const wireframeMaterial = new t.MeshBasicMaterial({color: colors.wireframe, wireframe: true})
 
-    return {group, radius}
+    let sphere: t.Sphere | null = null
+    for (let mesh of meshes) {
+        const subgroup = new t.Group()
+        const geometry = meshToThreeGeometry(mesh)
+        const selected = new t.Mesh(geometry, selectedMaterial)
+        const solid = new t.Mesh(geometry, solidMaterial)
+        const wireframe = new t.Mesh(geometry, wireframeMaterial)
+        subgroup.add(selected)
+        subgroup.add(solid)
+        subgroup.add(wireframe)
+
+        group.add(subgroup)
+
+        const {boundingSphere} = geometry
+        if (!boundingSphere) {
+            throw 'unexpected invalid bounding sphere'
+        }
+        sphere = sphere ? sphere.union(boundingSphere) : boundingSphere
+    }
+
+    if (!sphere) {
+        throw 'failed to calculate overall bounding sphere'
+    }
+    // center the geometry
+    group.translateX(-sphere.center.x)
+    group.translateY(-sphere.center.y)
+    return {group, radius: sphere.radius}
+}
+
+export function highlightSelected(geometry: t.Group, selectionIndex: number) {
+    const paths = geometry.children
+    for (let i = 0; i < paths.length; ++i) {
+        const [selected, unselected] = paths[i].children
+        if (i === selectionIndex) {
+            selected.visible = true
+            unselected.visible = false
+        } else {
+            selected.visible = false
+            unselected.visible = true
+        }
+    }
 }

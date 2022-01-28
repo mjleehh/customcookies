@@ -3,7 +3,7 @@ import {Size, Vector} from 'src/geometry/types'
 import {ThreeCacheContext} from './ThreeCache'
 import {useAppSelector} from '../state/hooks'
 import {
-    calculateInitialCamDistance,
+    calculateInitialCamDistance, highlightSelected,
     newThreeCamera,
     newThreeScene,
     viewDistToRotationDelta
@@ -27,6 +27,7 @@ export default function Preview3d({size}: Preview3dProps) {
     const horizontal = useAppSelector(state => state.view3d.horizontal)
     const vertical = useAppSelector(state => state.view3d.vertical)
     const zoom = useAppSelector(state => state.view3d.zoom)
+    const selectionIndex = useAppSelector(state => state.geometry.selectionIndex)
     const geometry = React.useContext(ThreeCacheContext)
 
     const camera = newThreeCamera()
@@ -45,11 +46,12 @@ export default function Preview3d({size}: Preview3dProps) {
         }
 
         if (geometry && startDragState !== null) {
+            const {radius} = geometry
             const delta = g.sub([e.clientX, e.clientY], startDragState.position)
             const fractionOfViewDistX = g.X(delta) / size.width
-            const angleX = viewDistToRotationDelta(fractionOfViewDistX, camera.position.z, geometry.radius)
+            const angleX = viewDistToRotationDelta(fractionOfViewDistX, camera.position.z, radius)
             const fractionOfViewDistY = g.Y(delta) / size.width
-            const angleY = viewDistToRotationDelta(fractionOfViewDistY, camera.position.z, geometry.radius)
+            const angleY = viewDistToRotationDelta(fractionOfViewDistY, camera.position.z, radius)
             dispatch(setRotations([
                 -10 * angleX + startDragState.horizontal,
                 -10 * angleY + startDragState.vertical,
@@ -68,9 +70,11 @@ export default function Preview3d({size}: Preview3dProps) {
     }
 
     if (geometry) {
+        highlightSelected(geometry.group, selectionIndex)
+        const {radius} = geometry
         const transformGroup = new t.Group()
         transformGroup.add(geometry.group)
-        const camDistance = calculateInitialCamDistance(geometry.radius) * zoom
+        const camDistance = calculateInitialCamDistance(radius) * zoom
         camera.position.set(0, 0, camDistance)
         transformGroup.rotation.y = g.rad(horizontal)
         transformGroup.rotation.x = g.rad(vertical)

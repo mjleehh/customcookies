@@ -8,7 +8,7 @@ interface View3dState {
 
 const initialState: View3dState = {
     horizontal: 0,
-    vertical: 0,
+    vertical: 180,
     zoom: 1,
 }
 
